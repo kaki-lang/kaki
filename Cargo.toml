@@ -1,0 +1,9 @@
+[package]
+name = "kaki"
+version = "0.0.0"
+authors = ["Adam Christiansen"]
+description = "Kaki programming language"
+license = "MIT"
+repository = "https://github.com/kaki-lang/kaki"
+keywords = ["compiler", "interpreter", "language"]
+edition = "2018"
