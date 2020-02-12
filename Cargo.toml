@@ -5,5 +5,10 @@ authors = ["Adam Christiansen"]
 description = "Kaki programming language"
 license = "MIT"
 repository = "https://github.com/kaki-lang/kaki"
+homepage = "https://kaki-lang.org"
 keywords = ["compiler", "interpreter", "language"]
 edition = "2018"
+publish = false
+
+[dependencies]
+num-bigint = "0.2.6"
