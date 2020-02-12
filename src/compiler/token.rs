@@ -217,7 +217,7 @@ impl<'a> Token<'a> {
     /// # Returns
     ///
     /// A new [`Token`].
-    pub fn new(text: &str, kind: TokenKind, span: Span) {
+    pub fn new(text: &str, kind: TokenKind, span: Span) -> Token {
         Token {
             text: text,
             kind: kind,
