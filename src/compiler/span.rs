@@ -28,3 +28,13 @@ impl Span {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_span_new() {
+        assert_eq!(Span::new(10, 20), Span { start: 10, end: 20 });
+    }
+}

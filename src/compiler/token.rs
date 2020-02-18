@@ -1,6 +1,5 @@
 //! Facilities for dealing with tokens directly.
 
-use self::TokenKind::*;
 use super::span::Span;
 
 /// The kind of a token.
@@ -166,41 +165,6 @@ pub enum TokenKind {
     Tilde,
 }
 
-impl TokenKind {
-    /// Test if a token is whitespace.
-    pub fn is_whitespace(&self) -> bool {
-        match self {
-            Space | NewLine => true,
-            _ => false,
-        }
-    }
-
-    /// Test if a token is a word.
-    pub fn is_name(&self) -> bool {
-        match self {
-            NameLower | NameUpper | NameUnderscore | NameAnon => true,
-            _ => false,
-        }
-    }
-
-    /// Test if a token is an operator or punctuation.
-    pub fn is_op_punc(&self) -> bool {
-        match self {
-            Space | NewLine | Amp | AmpAmp | At | AtAt | AtBraceL | Bang | BangEq | BracketL
-            | BracketR | BraceL | BraceR | BackSlash | Caret | Colon | ColonColon | Comma | Dot
-            | Eq | EqEq | Gt | GtEq | GtGt | Lt | LtEq | LtLt | Minus | ParenL | ParenR
-            | Percent | Pipe | PipePipe | Plus | Question | QuestionEq | Slash | SlashSlash
-            | Star | StarStar | Tilde => true,
-            _ => false,
-        }
-    }
-
-    /// Test if a token can be used as a boundary.
-    pub fn is_boundary(&self) -> bool {
-        self.is_whitespace() || self.is_op_punc()
-    }
-}
-
 /// A token of source code.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Token<'a> {
@@ -232,5 +196,23 @@ impl<'a> Token<'a> {
             kind: kind,
             span: span,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use TokenKind::*;
+
+    #[test]
+    fn test_token_new() {
+        assert_eq!(
+            Token::new("hello", NameLower, Span::new(5, 10)),
+            Token {
+                text: "hello",
+                kind: NameLower,
+                span: Span::new(5, 10)
+            }
+        );
     }
 }
