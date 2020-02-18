@@ -212,13 +212,13 @@ can be written with an implicit anonymous function.
 squares = [1, 2, 3].map { $ ** 2 }
 ```
 
-These two expressions are equivalent. When `$` appears in an expression, it
+These two expressions are equivalent. When `_0` appears in an expression, it
 turns that expression into a function body. In fact, multiple arguments can be
-used through enumeration, where `$0`, `$1`, `$2`, and so on are positional
-arguments. The `$` is an alias for `$0`. In the following example, both
-expressions are equivalent for computing the sum of a list.
+used through enumeration, where `_0`, `_1`, `_2`, and so on are positional
+arguments. In the following example, both expressions are equivalent for
+computing the sum of a list.
 
 ```kaki
 sum = [1, 2, 3].fold(0) { |acc, x| acc + x }
-sum = [1, 2, 3].fold(0) { $0 + $1 }
+sum = [1, 2, 3].fold(0) { _0 + _1 }
 ```

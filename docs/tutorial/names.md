@@ -21,6 +21,10 @@ The naming rules are:
 - The names of **types** must match the regex `_*[A-Z][A-Za-z0-9_]*`, which
   means the names can start with 0 or more underscores, then have an uppercase
   letter, then contain any number of alphanumeric characters and underscores.
+- **Anonymous names**, which are convenience names used for implicit block
+  arguments, must match the regex `_[0-9]+`. This is an underscore with one or
+  more decimal digiats after it. Note that leading zeros are allowed, so `_1`
+  and `_0001` are the same.
 
 When names end with a `?` or `!`, they give hints to what the name does. Names
 ending with `?` indicate a check that returns a `Bool`, like asking a question.
@@ -42,6 +46,9 @@ ABC DELIMITER MAX_VALUE _LIMIT
 
 # Types
 List OrderedSet _Element
+
+# Anonymous names
+_0 _1 _2 _3 _17
 ```
 
 The following words are reserved by the language, and cannot be used for any

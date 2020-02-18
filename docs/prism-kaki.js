@@ -16,6 +16,12 @@
       pattern: /@?@_*[a-z][a-z0-9_]*(!|\?)?/,
       alias: 'property'
     },
+    'number': [
+      /\b(0b[01](_?[01])*)\b/,
+      /\b(0o[0-7](_?[0-7])*)\b/,
+      /\b(0x[\dA-Fa-f](_?[\dA-Fa-f])*)\b/,
+      /\b((\d(_?\d)*\.)?(\d(_?\d)*)([e][+-]?\d(_?\d)*)?)\b/
+    ],
     'constant': {
       pattern: /\b(_*[A-Z][A-Z_0-9]*)\b/,
       alias: 'number'
@@ -29,18 +35,12 @@
       alias: 'entity'
     },
     'anonymous-function-arg': {
-      pattern: /\$\d*/,
+      pattern: /_\d*/,
       alias: 'entity'
     },
     'boolean': /\b(false|none|true)\b/,
-    'number': [
-      /\b(0b[01](_?[01])*)\b/,
-      /\b(0o[0-7](_?[0-7])*)\b/,
-      /\b(0x[\dA-Fa-f](_?[\dA-Fa-f])*)\b/,
-      /\b((\d(_?\d)*\.)?(\d(_?\d)*)([e][+-]?\d(_?\d)*)?)\b/
-    ],
     'operator': /[\~\-\%\+\^\,]|\*\*?|\/\/?|<(<|=)?|>(>|=)?|==?|!=?|&&?|\|\|?|\?=/,
-    'punctuation': /(\(|\)|\[|\]|\{|\}|;|::?|,|\.\.\.|\.|\?)/,
+    'punctuation': /(\(|\)|\[|\]|\{|\}|;|::?|,|\.|\?)/,
     'string': {
       pattern: /\@?"(\\|(?!")[\s\S])*"/,
       greedy: true,

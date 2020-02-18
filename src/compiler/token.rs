@@ -12,20 +12,29 @@ pub enum TokenKind {
     /// One `\n` or `\r\n` sequence.
     NewLine,
 
-    /// A word that starts with a lowercase letter.
-    Lower,
+    /// A name that starts with a lowercase letter.
+    NameLower,
 
-    /// A word that starts with a uppercase letter.
-    Upper,
+    /// A name that starts with a uppercase letter.
+    NameUpper,
 
-    /// A word that only consists of underscores.
-    Under,
+    /// A name that only consists of one underscore.
+    NameUnderscore,
 
-    /// A word that is `$` or `$<non-negative-integer>`.
-    Anon,
+    /// A name that is `_<non-negative-integer>`.
+    NameAnon,
 
-    /// An integral value.
-    Integer,
+    /// A binary integral value.
+    IntBin,
+
+    /// An octal integral value.
+    IntOct,
+
+    /// A decimal integral value.
+    IntDec,
+
+    /// A hexadecimal integral value.
+    IntHex,
 
     /// A floating point value.
     Float,
@@ -167,9 +176,9 @@ impl TokenKind {
     }
 
     /// Test if a token is a word.
-    pub fn is_word(&self) -> bool {
+    pub fn is_name(&self) -> bool {
         match self {
-            Lower | Upper | Under | Anon => true,
+            NameLower | NameUpper | NameUnderscore | NameAnon => true,
             _ => false,
         }
     }
