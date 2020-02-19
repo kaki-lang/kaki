@@ -219,7 +219,7 @@ impl<'a> Lexer<'a> {
     ///
     /// # Arguments
     ///
-    /// * `kind` - THe kind of the token to extract.
+    /// * `kind` - The kind of the token to extract.
     ///
     /// # Returns
     ///
@@ -446,43 +446,46 @@ impl<'a> Lexer<'a> {
     /// `Some(Ok(...))` containing a [`Token`] if a number was found, otherwise `None`
     fn lex_number(&mut self) -> Option<Result<Token<'a>, LexerError<'a>>> {
         // Take a digit
-        if let Some(g) = self.peek() {
+        let first_is_zero = if let Some(g) = self.peek() {
             if !is_digit(g) {
                 return None;
             }
             self.next();
+            g == "0"
         } else {
             return None;
-        }
+        };
         // Take binary, octal, and hexadecimal literals
-        if let Some(g) = self.peek() {
-            // Binary
-            if g == "b" {
-                self.next();
-                if self.consume_number(true, &is_bin_digit) > 0 {
-                    return self.extract(IntBin);
-                } else {
-                    return self.error(Incomplete, Some(IntBin));
-                }
-            // Octal
-            } else if g == "o" {
-                self.next();
-                if self.consume_number(true, &is_oct_digit) > 0 {
-                    return self.extract(IntOct);
-                } else {
-                    return self.error(Incomplete, Some(IntOct));
-                }
-            // Hex
-            } else if g == "x" {
-                self.next();
-                if self.consume_number(true, &is_hex_digit) > 0 {
-                    return self.extract(IntHex);
-                } else {
-                    return self.error(Incomplete, Some(IntHex));
+        if first_is_zero {
+            if let Some(g) = self.peek() {
+                // Binary
+                if g == "b" {
+                    self.next();
+                    if self.consume_number(true, &is_bin_digit) > 0 {
+                        return self.extract(IntBin);
+                    } else {
+                        return self.error(Incomplete, Some(IntBin));
+                    }
+                // Octal
+                } else if g == "o" {
+                    self.next();
+                    if self.consume_number(true, &is_oct_digit) > 0 {
+                        return self.extract(IntOct);
+                    } else {
+                        return self.error(Incomplete, Some(IntOct));
+                    }
+                // Hex
+                } else if g == "x" {
+                    self.next();
+                    if self.consume_number(true, &is_hex_digit) > 0 {
+                        return self.extract(IntHex);
+                    } else {
+                        return self.error(Incomplete, Some(IntHex));
+                    }
                 }
             }
         }
-        // This is either a decimal integer or a float
+        // This is either a decimal integer or a float at this point
         self.consume_number(true, &is_digit);
         let mut kind = IntDec;
         // Eat the fraction if this is is a float
