@@ -11,6 +11,12 @@ pub enum TokenKind {
     /// One `\n` or `\r\n` sequence.
     NewLine,
 
+    /// One line comment, not including the newline.
+    CommentLine,
+
+    /// One block comment, including all nested comments.
+    CommentBlock,
+
     /// A name that starts with a lowercase letter.
     NameLower,
 

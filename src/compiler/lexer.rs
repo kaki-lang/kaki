@@ -359,6 +359,44 @@ impl<'a> Lexer<'a> {
         None
     }
 
+    /// Lex a comment if there is one.
+    ///
+    /// # Returns
+    ///
+    /// `Some(Ok(...))` containing a [`Token`] if a comment was found, otherwise `None`
+    fn lex_comment(&mut self) -> Option<Result<Token<'a>, LexerError<'a>>> {
+        // Try to lex block comments
+        if self.expect("#[[") {
+            let mut depth: usize = 1;
+            while let Some(_) = self.peek() {
+                if self.expect("]]") {
+                    depth -= 1;
+                } else {
+                    self.next();
+                }
+                if depth == 0 {
+                    break;
+                }
+            }
+            if depth == 0 {
+                self.extract(CommentBlock)
+            } else {
+                self.error(Incomplete, Some(CommentBlock))
+            }
+        // Try to lex line comments
+        } else if self.expect("#") {
+            while let Some(_) = self.peek() {
+                if let Some(Ok(_)) = self.clone().lex_newline() {
+                    break;
+                }
+            }
+            self.extract(CommentLine)
+        // There was no comment
+        } else {
+            None
+        }
+    }
+
     /// Lex a name if there is one.
     ///
     /// # Returns
@@ -606,6 +644,7 @@ impl<'a> Lexer<'a> {
         // Lex the next token
         return_some!(self.lex_space());
         return_some!(self.lex_newline());
+        return_some!(self.lex_comment());
         return_some!(self.lex_name());
         return_some!(self.lex_number());
         return_some!(self.lex_string());
