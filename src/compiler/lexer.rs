@@ -670,6 +670,7 @@ impl<'a> Lexer<'a> {
         return_some!(self.lex_exact(">=", GtEq));
         return_some!(self.lex_exact(">>", GtGt));
         return_some!(self.lex_exact(">", Gt));
+        return_some!(self.lex_exact("<=>", LtEqGt));
         return_some!(self.lex_exact("<=", LtEq));
         return_some!(self.lex_exact("<<", LtLt));
         return_some!(self.lex_exact("<", Lt));

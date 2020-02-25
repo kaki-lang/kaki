@@ -125,6 +125,9 @@ pub enum TokenKind {
     /// One `<=`.
     LtEq,
 
+    /// One `<=>`.
+    LtEqGt,
+
     /// One `<<`.
     LtLt,
 
