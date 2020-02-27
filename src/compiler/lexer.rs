@@ -683,6 +683,7 @@ impl<'a> Lexer<'a> {
         return_some!(self.lex_exact("+", Plus));
         return_some!(self.lex_exact("?=", QuestionEq));
         return_some!(self.lex_exact("?", Question));
+        return_some!(self.lex_exact(";", Semicolon));
         return_some!(self.lex_exact("//", SlashSlash));
         return_some!(self.lex_exact("/", Slash));
         return_some!(self.lex_exact("**", StarStar));

@@ -1,6 +1,21 @@
 # Multiline Expressions
 
-There are four rules for expressions that span multiple lines:
+Some languages require a `;` or other punctuation after every expression, but
+that is not required here. Programs are one statement per line, but of course
+multiple can be specified on a line by using `;` as a delimiter. For example:
+
+```kaki
+# This code
+a = 3
+b = 10
+println(a + b)
+
+# Can be written in one line as
+a = 3; b = 10; println(a + b)
+```
+
+However, expressions can be much too long to fit on a single line, so there are
+a set of rules for when an expression continues to the next line:
 
 1.  Anything inside of `(...)` and `[...]` are automatically grouped.
 

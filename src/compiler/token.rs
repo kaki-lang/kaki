@@ -158,6 +158,9 @@ pub enum TokenKind {
     /// One `?=`.
     QuestionEq,
 
+    /// One `;`.
+    Semicolon,
+
     /// One `/`.
     Slash,
 
