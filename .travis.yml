@@ -1,17 +1,25 @@
 language: rust
+
 cache: cargo
+
+os:
+  - linux
+  - osx
+  - windows
+
 rust:
   - stable
-  - beta
   - nightly
+
 matrix:
   allow_failures:
     - rust: nightly
   fast_finish: true
+  include:
+    - name: "rustfmt"
+      os: linux
+      env: RUSTFMT=true
+      rust: nightly
 
-before_script:
-  - rustup component add rustfmt
-script:
-  - cargo fmt --verbose --all -- --check
-  - cargo build --verbose --all
-  - cargo test --verbose --all
+install: .ci/install.sh
+script: .ci/script.sh

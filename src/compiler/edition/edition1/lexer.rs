@@ -1,14 +1,14 @@
 //! The lexer for edition 1.
 
-use crate::edition::Edition;
 use crate::compiler::lexer::{Lexer, LexerBase, LexerResult};
 use crate::compiler::token::Token;
+use crate::edition::Edition;
 
 /// The lexer for the edition 1 of the specification.
 #[derive(Clone)]
 pub struct LexerEdition1<'a> {
     /// The base lexer.
-    base: LexerBase<'a>
+    base: LexerBase<'a>,
 }
 
 impl<'a> LexerEdition1<'a> {
@@ -22,7 +22,9 @@ impl<'a> LexerEdition1<'a> {
     ///
     /// A new [`LexerEdition1`].
     pub fn new(source: &'a str) -> LexerEdition1<'a> {
-        LexerEdition1 { base: LexerBase::new(source)}
+        LexerEdition1 {
+            base: LexerBase::new(source),
+        }
     }
 }
 

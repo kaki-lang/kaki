@@ -6,7 +6,7 @@
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Edition {
     /// Edition 1.
-    Edition1
+    Edition1,
 }
 
 impl Edition {

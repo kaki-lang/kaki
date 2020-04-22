@@ -1,9 +1,9 @@
 //! A lexer which produces tokens for source code. The lexer only produces the minimal information
 //! about the token and its location, and does not try to make any decisions on context.
 
-use crate::edition::Edition;
 use super::span::Span;
 use super::token::{Token, TokenKind};
+use crate::edition::Edition;
 use unicode_segmentation::{Graphemes, UnicodeSegmentation};
 
 /// The types of errors that can occur during lexing.

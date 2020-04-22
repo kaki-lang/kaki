@@ -64,6 +64,7 @@ pub fn is_hex_digit(s: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use unicode_segmentation::{Graphemes, UnicodeSegmentation};
 
     static LOWER: &'static str = "abcdefghijklmnopqrstuvwxyz";
     static UPPER: &'static str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
