@@ -55,7 +55,7 @@ The following words are reserved by the language, and cannot be used for any
 of the above:
 
 ```kaki
-_ abstract break cons continue else false for func if in
+_ abstract break cons continue else false for fn if in
 loop none pub return self Self trait true type use while
 ```
 
@@ -69,7 +69,7 @@ needed or an argument to a function is unused:
 first, _ = [15, 27]
 
 # Unused function argument
-func print_info(header, _)
+fn print_info(header, _)
   println("The info is '{}'", header)
 }
 ```

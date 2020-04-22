@@ -63,7 +63,7 @@ If an error is obviosly recoverable, then it should be placed in a `Result`
 type.
 
 ```kaki
-func divide(x, y) {
+fn divide(x, y) {
   if y == 0 {
     Result.err("Can't divide by 0")
   }

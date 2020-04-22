@@ -23,11 +23,11 @@ pub enum TokenKind {
     /// A name that starts with a uppercase letter.
     NameUpper,
 
-    /// A name that only consists of one underscore.
-    NameUnderscore,
-
     /// A name that is `_<non-negative-integer>`.
     NameAnon,
+
+    /// A name that only consists of one underscore.
+    NameUnderOne,
 
     /// A binary integral value.
     IntBin,

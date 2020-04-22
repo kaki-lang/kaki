@@ -10,7 +10,7 @@
         lookbehind: true
       }
     ],
-    'keyword': /\b(_|abstract|break|cons|continue|else|for|func|if|in|loop|pub|return|self|Self|trait|type|use|while)\b/,
+    'keyword': /\b(_|abstract|break|cons|continue|else|for|fn|if|in|loop|pub|return|self|Self|trait|type|use|while)\b/,
     'function': /@?@?_*[a-z][a-z0-9_]*(!|\?)?(?=\s*\()/,
     'field': {
       pattern: /@?@_*[a-z][a-z0-9_]*(!|\?)?/,

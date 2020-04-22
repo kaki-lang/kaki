@@ -39,7 +39,7 @@ this example, a type is created that increments a value by a specified number
 every time the `increment()` method is called.
 
 ```kaki
-func count_by(step_size) {
+fn count_by(step_size) {
   type {
     cons new() {
       @count = 0

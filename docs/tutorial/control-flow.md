@@ -7,7 +7,7 @@ Control mechanisms allow programs to make decisions about their execution.
 Consider a function, `double`, that doubles its argument, is created below.
 
 ```kaki
-func double(x) {
+fn double(x) {
   return 2 * x
 }
 ```
@@ -22,7 +22,7 @@ expression is not always required, and is only needed to exit a function early.
 For example, the following is equivalent:
 
 ```kaki
-func double(x) {
+fn double(x) {
   2 * x
 }
 ```
@@ -30,7 +30,7 @@ func double(x) {
 A function with more expressions can leverage an implicit return as well.
 
 ```kaki
-func g(x, y) {
+fn g(x, y) {
   a = x ** 2 + y ** 2
   b = x ** 2 - y ** 2
   a / b

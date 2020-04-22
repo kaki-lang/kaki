@@ -2,10 +2,10 @@
 
 ## Function Definition
 
-A new function can be created using `func`:
+A new function can be created using `fn`:
 
 ```kaki
-func add(x, y) {
+fn add(x, y) {
   x + y
 }
 ```
@@ -17,19 +17,11 @@ It if then used by placing arguments between `(` and `)`:
 add(7, 3)
 ```
 
-The `func` keyword creates an `Fn` instance, so the above definition is the
+The `fn` keyword creates an `Fn` instance, so the above definition is the
 same as:
 
 ```kaki
 add = Fn.new { |x, y|
-  x + y
-}
-```
-
-As an aside, `func` can be used in a similar way to `Fn.new`:
-
-```kaki
-add = func(x, y) {
   x + y
 }
 ```
@@ -51,7 +43,7 @@ or by name with `&`, as shown below.
 
 ```kaki
 # Create a function which accepts a block
-func f(a, b, &block) {
+fn f(a, b, &block) {
   block(a, b)
 }
 
@@ -59,10 +51,16 @@ func f(a, b, &block) {
 println(f(2, 3) { |a, b| a + b })
 
 # Pass a named block argument
-func add(a, b) {
+fn add(a, b) {
   a + b
 }
 println(f(2, 3, &add))
+
+# Pass an expression as a block argument
+fn add(a, b) {
+  a + b
+}
+println(f(2, 3, &Fn.new { |a, b| a - b }))
 ```
 
 ## Argument Types
@@ -97,7 +95,7 @@ The simplest are positional arguments, which we saw already.
 
 ```kaki
 # Positional arguments
-func f(a, b) {}
+fn f(a, b) {}
 f(1, 2) # a = 1, b = 2
 ```
 
@@ -105,7 +103,7 @@ Next are optional arguments.
 
 ```kaki
 # Optional arguments
-func f(?a, ?b: 50) {}
+fn f(?a, ?b: 50) {}
 f()     # a = none, b = 50
 f(1)    # a = 1,    b = 50
 f(1, 2) # a = 1,    b = 2
@@ -115,7 +113,7 @@ Next are variadic arguments.
 
 ```kaki
 # Variadic arguments
-func f(*xs) {}
+fn f(*xs) {}
 f()        # xs = []
 f(1)       # xs = [1]
 f(1, 2)    # xs = [1, 2]
@@ -130,14 +128,14 @@ Keyword arguments are a bit more complex.
 
 ```kaki
 # Basic keyword arguments
-func f(a: 1, b: 2) {}
+fn f(a: 1, b: 2) {}
 f()                # a = 1,  b = 2
 f(a: 10)           # a = 10, b = 2
 f(b: "two")        # a = 1,  b = "two"
 f(a: 10, b: "two") # a = 10, b = "two"
 
 # Catch all keyword arguments
-func f(a: 1, b: 2, **kws) {}
+fn f(a: 1, b: 2, **kws) {}
 f()                      # a = 1,  b = 2, kws = @{}
 f(a: 10, c: 50)          # a = 10, b = 2, kws = @{"c": 50}
 f(a: 10, c: 50, d: true) # a = 10, b = 2, kws = @{"c": 50, "d": true}
@@ -150,7 +148,7 @@ We already saw one way to pass block arguments, but there are more options.
 
 ```kaki
 # Block arguments
-func f(&block) {}
+fn f(&block) {}
 
 # Anonymous block
 f() { |a, b|
@@ -163,13 +161,13 @@ f { |a, b|
 }
 
 # Named block
-func g(a, b) {
+fn g(a, b) {
   a + b
 }
 f(&g)
 
 # Optional block
-func h(?&block) {}
+fn h(?&block) {}
 f() # block = none
 ```
 
@@ -177,9 +175,9 @@ These can be combined all together, but the order of the arguments must be the
 same as the above.
 
 ```kaki
-func fn(a, ?b, *c, d: "hello", **e, &f) {}
+fn fn(a, ?b, *c, d: "hello", **e, &f) {}
 
-func block_func(n, m) {
+fn block_func(n, m) {
   n * m
 }
 
@@ -209,7 +207,7 @@ That is a lot of work to simply square each number in the list. Instead, this
 can be written with an implicit anonymous function.
 
 ```kaki
-squares = [1, 2, 3].map { $ ** 2 }
+squares = [1, 2, 3].map { _0 ** 2 }
 ```
 
 These two expressions are equivalent. When `_0` appears in an expression, it

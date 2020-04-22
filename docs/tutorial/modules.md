@@ -77,9 +77,8 @@ visibile outside of the module definition file itself. Below is the contents of 
 ```kaki
 # my-module.kaki
 
-# Import some things. `SomeType` and `func`
-# are public as if they were declared in
-# this module
+# Import some things. `SomeType` and `some_function`
+# are public as if they were declared in this module
 use mod_a::CONSTANT
 pub use mod_b::SomeType
 use mod_c::{pub some_function, VALUE}
@@ -88,7 +87,7 @@ use mod_c::{pub some_function, VALUE}
 SCALE = 10
 
 # Export something
-pub func scale(x) {
+pub fn scale(x) {
   x * SCALE
 }
 ```
