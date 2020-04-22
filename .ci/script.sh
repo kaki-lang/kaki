@@ -2,7 +2,7 @@
 
 # Run rustfmt
 if [ "$RUSTFMT" == true ]; then
-  - cargo fmt --verbose --all -- --check
+    cargo fmt --verbose --all -- --check
     exit
 fi
 
