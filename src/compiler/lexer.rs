@@ -4,7 +4,8 @@
 use super::span::Span;
 use super::token::{Token, TokenKind};
 use crate::edition::Edition;
-use unicode_segmentation::{Graphemes, UnicodeSegmentation};
+use std::iter::Peekable;
+use std::str::Chars;
 
 /// The types of errors that can occur during lexing.
 #[derive(Clone, Debug, PartialEq)]
@@ -16,7 +17,7 @@ pub enum LexerErrorKind {
     /// A token was able to be lexed, but its contents are invalid.
     Invalid,
 
-    /// The sequence of graphemes do not match the definitions of any tokens. This is the
+    /// The sequence of scalars do not match the definitions of any tokens. This is the
     /// fallthrough case where no tokens are able to matched.
     NoMatch,
 }
@@ -50,16 +51,16 @@ pub enum LexerResult<'a> {
 /// This base lexer implements many common operations that derived lexers will share.
 #[derive(Clone)]
 pub struct LexerBase<'a> {
-    /// The previous grapheme consumed by the lexer.
-    prev: Option<&'a str>,
+    /// The previous scalar consumed by the lexer.
+    prev: Option<char>,
 
-    /// The index in the source, measured in graphemes.
+    /// The index in the source, measured in scalars.
     index: usize,
 
     /// The index in the source, measured in bytes.
     index_bytes: usize,
 
-    /// The marked index in the source, measured in graphemes.
+    /// The marked index in the source, measured in scalars.
     mark: usize,
 
     /// The marked index in the source, measured in bytes.
@@ -68,8 +69,8 @@ pub struct LexerBase<'a> {
     /// The source code.
     source: &'a str,
 
-    /// An iterator over the graphemes in the source.
-    graphemes: Graphemes<'a>,
+    /// An iterator over the scalars in the source.
+    chars: Peekable<Chars<'a>>,
 }
 
 impl<'a> LexerBase<'a> {
@@ -90,7 +91,7 @@ impl<'a> LexerBase<'a> {
             mark: 0,
             mark_bytes: 0,
             source: source,
-            graphemes: source.graphemes(true),
+            chars: source.chars().peekable(),
         }
     }
 
@@ -110,37 +111,40 @@ impl<'a> LexerBase<'a> {
         Span::new(self.mark, self.index)
     }
 
-    /// Get the next grapheme and advance the lexer.
+    /// Get the next scalar and advance the lexer.
     ///
     /// # Returns
     ///
-    /// The next grapheme if not at the end of the lexer.
-    pub fn next(&mut self) -> Option<&'a str> {
-        if let Some(g) = self.graphemes.next() {
+    /// The next scalar if not at the end of the lexer.
+    pub fn next(&mut self) -> Option<char> {
+        if let Some(c) = self.chars.next() {
             self.index += 1;
-            self.index_bytes += g.len();
-            Some(g)
+            self.index_bytes += c.len_utf8();
+            Some(c)
         } else {
             None
         }
     }
 
-    /// Get the previous grapheme.
+    /// Get the previous scalar.
     ///
     /// # Returns
     ///
-    /// The next grapheme if not at the start of the lexer.
-    pub fn prev(&self) -> Option<&'a str> {
+    /// The previous scalar if not at the start of the lexer.
+    pub fn prev(&self) -> Option<char> {
         self.prev
     }
 
-    /// Peek the next grapheme without advancing the lexer.
+    /// Peek the next scalar without advancing the lexer.
     ///
     /// # Returns
     ///
-    /// The next grapheme if not at the end of the lexer.
-    pub fn peek(&self) -> Option<&'a str> {
-        self.clone().graphemes.next()
+    /// The next scalar if not at the end of the lexer.
+    pub fn peek(&mut self) -> Option<char> {
+        match self.chars.peek() {
+            Some(c) => Some(c.to_owned()),
+            None => None,
+        }
     }
 
     /// Extract the text between the marked and current position.
@@ -192,7 +196,7 @@ impl<'a> LexerBase<'a> {
         }))
     }
 
-    /// Consume graphemes while a predicate is satisfied.
+    /// Consume scalars while a predicate is satisfied.
     ///
     /// # Arguments
     ///
@@ -200,11 +204,11 @@ impl<'a> LexerBase<'a> {
     ///
     /// # Returns
     ///
-    /// The number of graphemes consumed.
-    fn take_while(&mut self, pred: &dyn Fn(&str) -> bool) -> usize {
+    /// The number of scalars consumed.
+    fn take_while(&mut self, pred: &dyn Fn(char) -> bool) -> usize {
         let mut count = 0;
-        while let Some(g) = self.peek() {
-            if !pred(g) {
+        while let Some(c) = self.peek() {
+            if !pred(c) {
                 break;
             }
             count += 1;
@@ -212,27 +216,25 @@ impl<'a> LexerBase<'a> {
         count
     }
 
-    /// Advance the lexer to consume a pattern if it exists at the current lexer position.
+    /// Advance the lexer to consume a sequence if it exists at the current lexer position.
     ///
     /// # Arguments
     ///
-    /// * `pattern` - The pattern to match.
+    /// * `sequence` - The sequence to match.
     ///
     /// # Returns
     ///
-    /// `true` when the pattern is matched and the lexer is advanced, `false` otherwise.
-    fn expect(&mut self, pattern: &str) -> bool {
+    /// `true` when the sequence is matched and the lexer is advanced, `false` otherwise.
+    fn expect_seq(&mut self, sequence: &str) -> bool {
         let mut lexer = self.clone();
         let mut count: usize = 0;
         // Test that the pattern matches
-        for g1 in pattern.graphemes(true) {
+        for c1 in sequence.chars() {
             count += 1;
-            if let Some(g2) = lexer.next() {
-                if g1 != g2 {
-                    return false;
-                }
-            } else {
-                return false;
+            match lexer.next() {
+                Some(c2) if c1 != c2 => return false,
+                None => return false,
+                _ => {}
             }
         }
         // Advance the lexer
@@ -242,20 +244,23 @@ impl<'a> LexerBase<'a> {
         true
     }
 
-    /// The pattern is treated as a set of graphemes and attempts to match any one of them at the
-    /// current position. If a match is made the lexer is advanced.
+    /// Advance the lexer to consume up to one scalar at the current position, matched from a set
+    /// of scalars.
     ///
     /// # Arguments
     ///
-    /// * `pattern` - The pattern to match, which is treated as a set of graphemes.
+    /// * `set` - The scalars to match, which is treated as a set.
     ///
     /// # Returns
     ///
     /// `true` when the pattern is matched and the lexer is advanced, `false` otherwise.
-    fn expect_one(&mut self, pattern: &str) -> bool {
-        for g in pattern.graphemes(true) {
-            if self.expect(g) {
-                return true;
+    fn expect_one(&mut self, set: &str) -> bool {
+        if let Some(c1) = self.peek() {
+            for c2 in set.chars() {
+                if c1 == c2 {
+                    self.next();
+                    return true;
+                }
             }
         }
         false
@@ -271,12 +276,12 @@ impl<'a> LexerBase<'a> {
     /// # Returns
     ///
     /// `Some(Ok(...))` containing a [`Token`] if the pattern was matched, otherwise `None`.
-    fn lex_exact(
+    fn exact(
         &mut self,
         pattern: &str,
         kind: TokenKind,
     ) -> Option<Result<Token<'a>, LexerError<'a>>> {
-        if self.expect(pattern) {
+        if self.expect_seq(pattern) {
             self.extract(kind)
         } else {
             None
