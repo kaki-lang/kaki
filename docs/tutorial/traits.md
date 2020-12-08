@@ -1,5 +1,9 @@
 # Traits
 
+**TODO Intro**
+
+**TODO Explain operator overloading**
+
 ## Definition
 
 Traits are used to add functionality to a type. They describe what a type can

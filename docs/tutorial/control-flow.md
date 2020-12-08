@@ -4,7 +4,8 @@ Control mechanisms allow programs to make decisions about their execution.
 
 ## Return
 
-Consider a function, `double`, that doubles its argument, is created below.
+Consider a simple function, `double`, that doubles its argument, as created
+below:
 
 ```kaki
 fn double(x) {
@@ -31,13 +32,13 @@ A function with more expressions can leverage an implicit return as well.
 
 ```kaki
 fn g(x, y) {
-  a = x ** 2 + y ** 2
-  b = x ** 2 - y ** 2
-  a / b
+  a = x ** 2
+  b = y ** 2
+  (a + b) / (a - b)
 }
 ```
 
-In the above, the result of `a / b` is returned.
+In the above, the result of `(a + b) / (a - b)` is returned.
 
 ## Block Evaluation
 
@@ -71,7 +72,7 @@ println(y) #=> 20
 
 ## If and Else
 
-The `if` keyword can be used to make a decision based on a decision:
+The `if` keyword can be used to make a decision based on a condition:
 
 ```kaki
 if x > 0 {
@@ -79,7 +80,7 @@ if x > 0 {
 }
 ```
 
-It can be combined with `else` to execute a different block of code when the
+`if` can be combined with `else` to execute a different block of code when the
 condition fails:
 
 ```kaki
@@ -90,8 +91,8 @@ if x > 0 {
 }
 ```
 
-These can be chained too, and only the the first block whose conditioned is
-satisfied is executed.
+`if` and `else` can be chained too, and only the the first block whose
+condition is satisfied is executed.
 
 ```kaki
 if x == 0 {

@@ -12,33 +12,23 @@ Comments can also occur on the same line as code.
 a = 5 # Here a variable is initialized
 ```
 
-Block comments are possible as well using `#[[` and `]]`.
+Documentation comments are a special kind of comment that are treated slightly
+differently from regular comments. They provide documentation for the code, and
+can be used to generate standalone documenation. Documentation comments are a
+block where each line begins with `///`.
 
 ```kaki
-#[[ This is a block comment ]]
-
-#[[
-Block comments can
-span multiple lines
-]]
-```
-
-Block comments can even be nested, allowing for code to be conveniently
-commented out without worry.
-
-```kaki
-#[[
-This is some comment with
-#[[ another comment ]]
-inside of it
-]]
-```
-
-Be careful, because a block comment cannot start on a line occupied by line
-comment.
-
-```kaki
-# This does not work #[[
-println("Hello")
-]] # <- syntax error
+/// Add two values together.
+///
+/// # Arguments
+///
+/// * `x` - The augend (first operand).
+/// * `y` - The addend (second operand).
+///
+/// # Returns
+///
+/// A sum.
+fn add(x, y) {
+  x + y
+}
 ```

@@ -1,18 +1,23 @@
 # Atoms
 
-Atoms are the fundamental building blocks and cannot be decomposed into
+Atoms are fundamental building blocks, and as such, cannot be decomposed into
 anything smaller. Additionally, atoms are _immutable_ and can never be changed
-after creation. Below are the types of atoms that the languaage defines.
+after creation.
 
 ## Booleans
 
 Booleans are of type `Bool`, and can take on the value `true` or `false` to
 represent truthiness.
 
+```kaki
+readonly = true
+available = false
+```
+
 ## Integers
 
-Integers are of type `Int`, and can take on any integral value of arbitrary
-precision. Integers can be expressed in decimal, binary, octal, and
+Integers are of type `Int`, and can take on any signed integral value of
+arbitrary precision. Integers can be expressed in decimal, binary, octal, and
 hexadecimal. `_` can be used for clarity as long as they are not the first or
 last character, and are not adjacent to the base marker (like `0b` in binary
 literals).
@@ -39,6 +44,9 @@ Floats are of type `Float`, and can take on any value represented by an IEEE
 
 # Scientific notation
 1e9 2.5e-4 2_712.349_753e10
+
+# E can also be uppercase
+1E-5 6.19E26
 ```
 
 The `_` rules for floats are:
@@ -56,9 +64,6 @@ Unicode code points encoded in UTF-8. Strings are delimited in a few ways:
 * `"` delimited strings can only span one line.
 * `"""` delimited strings are _multiline_ and can span any number of lines in
   the source.
-* Multiline strings that are prefixed with `@` are _smart_ strings. All leading
-  and trailing whitespace is stripped, all shared leading whitespace on each
-  line is stripped, and all trailing whitespace on each line is stripped.
 
 ```kaki
 # This type of string must start and end on the same line
@@ -76,19 +81,6 @@ that you want.
 
 # It can also be a single line
 """Single line"""
-
-# This is a smart string
-@"""
-
-  This is some string
-    that has multiple lines
-      indented differently
-
-"""
-# and it is the same as
-"This is some string" +
-"  that has multiple lines" +
-"    indented differently" +
 ```
 
 Certain characters can be escaped in strings:

@@ -2,15 +2,16 @@
   Prism.languages.kaki = {
     'comment': [
       {
-        pattern: /#(?!\[\[).*/,
+        pattern: /\/\/\/.*/,
         lookbehind: true
       },
       {
-        pattern: /#\[\[[\s\S]*\]\]/,
+        pattern: /#.*/,
         lookbehind: true
       }
     ],
     'keyword': /\b(_|abstract|break|cons|continue|else|for|fn|if|in|loop|pub|return|self|Self|trait|type|use|while)\b/,
+    'boolean': /\b(false|none|true)\b/,
     'function': /@?@?_*[a-z][a-z0-9_]*(!|\?)?(?=\s*\()/,
     'field': {
       pattern: /@?@_*[a-z][a-z0-9_]*(!|\?)?/,
@@ -20,25 +21,21 @@
       /\b(0b[01](_?[01])*)\b/,
       /\b(0o[0-7](_?[0-7])*)\b/,
       /\b(0x[\dA-Fa-f](_?[\dA-Fa-f])*)\b/,
-      /\b((\d(_?\d)*\.)?(\d(_?\d)*)([e][+-]?\d(_?\d)*)?)\b/
+      /\b((\d(_?\d)*\.)?(\d(_?\d)*)([eE][+-]?\d(_?\d)*)?)\b/
     ],
     'constant': {
-      pattern: /\b(_*[A-Z][A-Z_0-9]*)\b/,
+      pattern: /_*[A-Z][A-Z_0-9]*(?![a-z])(!|\?)?/,
       alias: 'number'
     },
     'type-trait': {
-      pattern: /\b(_*[A-Z][A-Za-z_0-9]*)\b/,
+      pattern: /_*[A-Z][A-Za-z_0-9]*(?![a-z])(!|\?)?/,
       alias: 'variable'
     },
-    'text': {
-      pattern: /\b(_*[a-z][a-z0-9_]*(!|\?)?)/,
-      alias: 'entity'
-    },
+    'variable': /_*[a-z][a-z0-9_]*(!|\?)?/,
     'anonymous-function-arg': {
       pattern: /_\d*/,
       alias: 'entity'
     },
-    'boolean': /\b(false|none|true)\b/,
     'operator': /[\~\-\%\+\^\,]|\*\*?|\/\/?|<(<|=)?|>(>|=)?|==?|!=?|&&?|\|\|?|\?=/,
     'punctuation': /(\(|\)|\[|\]|\{|\}|;|::?|,|\.|\?)/,
     'string': {

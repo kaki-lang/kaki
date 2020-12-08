@@ -78,4 +78,4 @@ assigns the name `speed` to the value `5` if one of the following conditions is
 satisifed:
 
 1.  The name `speed` does not exist.
-2.  The name `speed` is assigned to the value `none`.
+2.  The name `speed` already holds the value `none`.
