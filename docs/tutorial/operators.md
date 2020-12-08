@@ -9,66 +9,66 @@ trait name listed, then implementing that trait from `std::ops` allows a custom
 type to be used with that operator. Some operators are simply not overloadable,
 such as the logical and `&&`, which operates on `Bool` only.
 
-| Operator | Description              | Example                    | Overload         |
-|----------|--------------------------|----------------------------|------------------|
-| `!=`     | Not equal                | `a != b`                   | `Eq` or `Ord`    |
-| `!`      | Logical NOT              | `!a`                       | `Not`            |
-| `%=`     | Modulo assign            | `a %= b`                   | `ModAssign`      |
-| `%`      | Modulo                   | `a % b`                    | `Mod`            |
-| `&&`     | Logical AND              | `a && b`                   |                  |
-| `&=`     | Bitwise AND assign       | `a &= b`                   | `BitAndAssign`   |
-| `&`      | Bitwise AND              | `a & b`                    | `BitAnd`         |
-| `&`      | Block argument           | `fn f(&b) {}`, `f(&b)`     |                  |
-| `()`     | Grouping                 | `(a + b) * c`              |                  |
-| `**=`    | Power assign             | `a **= b`                  | `PowAssign`      |
-| `**`     | Keyword argument         | `fn f(**x) {}`, `f(**x)`   |                  |
-| `**`     | Power                    | `a ** b`                   | `Pow`            |
-| `*=`     | Multiply assign          | `a *= b`                   | `MulAssign`      |
-| `*`      | Multiply                 | `a * b`                    | `Mul`            |
-| `*`      | Variadic argument        | `fn f(*x) {}`, `f(*x)`     |                  |
-| `+=`     | Add assign               | `a += b`                   | `AddAssign`      |
-| `+`      | Add                      | `a + b`                    | `Add`            |
-| `,`      | Expression separator     | `a, b`                     |                  |
-| `-=`     | Subtract assign          | `a -= b`                   | `SubAssign`      |
-| `-`      | Negate                   | `-a`                       | `Neg`            |
-| `-`      | Subtract                 | `a - b`                    | `Sub`            |
-| `..=`    | Right inclusive range    | `a..=b`, `..=b`            |                  |
-| `..`     | Right exclusive range    | `a..b`, `a..`, `..b`, `..` |                  |
-| `.`      | Member access            | `a.b`                      |                  |
-| `//=`    | Floor divide assign      | `a //= b`                  | `FloorDivAssign` |
-| `//`     | Floor divide             | `a // b`                   | `FloorDiv`       |
-| `/=`     | Divide assign            | `a /= b`                   | `DivAssign`      |
-| `/`      | Divide                   | `a / b`                    | `Div`            |
-| `::`     | Namespace access         | `a::b`                     |                  |
-| `:`      | Map separator            | `{a: b}`                   |                  |
-| `:`      | Type specifier           | `a: T`                     |                  |
-| `;`      | Expression terminator    | `a; b`                     |                  |
-| `<<=`    | Shift left assign        | `a <<= b`                  | `ShLeftAssign`   |
-| `<<`     | Shift left               | `a << b`                   | `ShLeft`         |
-| `<=>`    | Total comparison         | `a <=> b`                  | `Ord`            |
-| `<=`     | Less than or equal       | `a <= b`                   | `Ord`            |
-| `<`      | Less than                | `a < b`                    | `Ord`            |
-| `==`     | Equal                    | `a == b`                   | `Eq` or `Ord`    |
-| `=`      | Assign                   | `a = b`                    |                  |
-| `=`      | Keyword argument default | `fn f(x = 3) {}`           |                  |
-| `>=`     | Greater than or equal    | `a >= b`                   | `Ord`            |
-| `>>=`    | Shift right assign       | `a >>= b`                  | `ShRightAssign`  |
-| `>>`     | Shift right              | `a >> b`                   | `ShRight`        |
-| `>`      | Greater than             | `a > b`                    | `Ord`            |
-| `?=`     | None coalescing assign   | `a ?= b`                   |                  |
-| `?`      | Optional argument        | `fn f(?x) {}`              |                  |
-| `[] =`   | Subscript assign         | `a[b] = c`                 | `IndexAssign`    |
-| `[]`     | List creation            | `[a, b, c]`                |                  |
-| `[]`     | Subscript                | `a[b]`                     | `Index`          |
-| `\\`     | Expression continuation  | `a <newline> \ + b`        |                  |
-| `\|=`    | Bitwise OR assign        | `a \| = b`                 | `BitOrAssign`    |
-| `\|\|`   | Logical OR               | `a \|\| b`                 |                  |
-| `\|`     | Bitwise OR               | `a \| b`                   | `BitOr`          |
-| `^=`     | Bitwise XOR assign       | `a ^= b`                   | `BitXorAssign`   |
-| `^`      | Bitwise XOR              | `a ^ b`                    | `BitXor`         |
-| `{}`     | Map creation             | `{a: b, c: d}`             |                  |
-| `{}`     | Scope                    | `{a; b; c}`                |                  |
-| `~`      | Bitwise NOT              | `~a`                       | `BitNot`         |
+| Operator | Description             | Example                    | Overload         |
+|----------|-------------------------|----------------------------|------------------|
+| `!=`     | Not equal               | `a != b`                   | `Eq` or `Ord`    |
+| `!`      | Logical NOT             | `!a`                       | `Not`            |
+| `%=`     | Modulo assign           | `a %= b`                   | `ModAssign`      |
+| `%`      | Modulo                  | `a % b`                    | `Mod`            |
+| `&&`     | Logical AND             | `a && b`                   |                  |
+| `&=`     | Bitwise AND assign      | `a &= b`                   | `BitAndAssign`   |
+| `&`      | Bitwise AND             | `a & b`                    | `BitAnd`         |
+| `&`      | Block argument          | `fn f(&b) {}`, `f(&b)`     |                  |
+| `()`     | Grouping                | `(a + b) * c`              |                  |
+| `**=`    | Power assign            | `a **= b`                  | `PowAssign`      |
+| `**`     | Keyword argument        | `fn f(**x) {}`, `f(**x)`   |                  |
+| `**`     | Power                   | `a ** b`                   | `Pow`            |
+| `*=`     | Multiply assign         | `a *= b`                   | `MulAssign`      |
+| `*`      | Multiply                | `a * b`                    | `Mul`            |
+| `*`      | Variadic argument       | `fn f(*x) {}`, `f(*x)`     |                  |
+| `+=`     | Add assign              | `a += b`                   | `AddAssign`      |
+| `+`      | Add                     | `a + b`                    | `Add`            |
+| `,`      | Expression separator    | `a, b`                     |                  |
+| `-=`     | Subtract assign         | `a -= b`                   | `SubAssign`      |
+| `-`      | Negate                  | `-a`                       | `Neg`            |
+| `-`      | Subtract                | `a - b`                    | `Sub`            |
+| `..=`    | Right inclusive range   | `a..=b`, `..=b`            |                  |
+| `..`     | Right exclusive range   | `a..b`, `a..`, `..b`, `..` |                  |
+| `.`      | Member access           | `a.b`                      |                  |
+| `//=`    | Floor divide assign     | `a //= b`                  | `FloorDivAssign` |
+| `//`     | Floor divide            | `a // b`                   | `FloorDiv`       |
+| `/=`     | Divide assign           | `a /= b`                   | `DivAssign`      |
+| `/`      | Divide                  | `a / b`                    | `Div`            |
+| `::`     | Namespace access        | `a::b`                     |                  |
+| `:`      | Map separator           | `{a: b}`                   |                  |
+| `:`      | Type specifier          | `a: T`                     |                  |
+| `;`      | Expression terminator   | `a; b`                     |                  |
+| `<<=`    | Shift left assign       | `a <<= b`                  | `ShLeftAssign`   |
+| `<<`     | Shift left              | `a << b`                   | `ShLeft`         |
+| `<=>`    | Total comparison        | `a <=> b`                  | `Ord`            |
+| `<=`     | Less than or equal      | `a <= b`                   | `Ord`            |
+| `<`      | Less than               | `a < b`                    | `Ord`            |
+| `==`     | Equal                   | `a == b`                   | `Eq` or `Ord`    |
+| `=`      | Assign                  | `a = b`                    |                  |
+| `=`      | Keyword argument        | `fn f(x=) {}`              |                  |
+| `>=`     | Greater than or equal   | `a >= b`                   | `Ord`            |
+| `>>=`    | Shift right assign      | `a >>= b`                  | `ShRightAssign`  |
+| `>>`     | Shift right             | `a >> b`                   | `ShRight`        |
+| `>`      | Greater than            | `a > b`                    | `Ord`            |
+| `?=`     | None coalescing assign  | `a ?= b`                   |                  |
+| `?`      | Optional argument       | `fn f(?x) {}`              |                  |
+| `[] =`   | Subscript assign        | `a[b] = c`                 | `IndexAssign`    |
+| `[]`     | List creation           | `[a, b, c]`                |                  |
+| `[]`     | Subscript               | `a[b]`                     | `Index`          |
+| `\\`     | Expression continuation | `a <newline> \ + b`        |                  |
+| `\|=`    | Bitwise OR assign       | `a \| = b`                 | `BitOrAssign`    |
+| `\|\|`   | Logical OR              | `a \|\| b`                 |                  |
+| `\|`     | Bitwise OR              | `a \| b`                   | `BitOr`          |
+| `^=`     | Bitwise XOR assign      | `a ^= b`                   | `BitXorAssign`   |
+| `^`      | Bitwise XOR             | `a ^ b`                    | `BitXor`         |
+| `{}`     | Map creation            | `{a: b, c: d}`             |                  |
+| `{}`     | Scope                   | `{a; b; c}`                |                  |
+| `~`      | Bitwise NOT             | `~a`                       | `BitNot`         |
 
 ## Precendence
 
