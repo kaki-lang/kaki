@@ -20,14 +20,22 @@ than the end are expensive, but random accesses are fast.
 
 A deque is an ordered collection, but unlike a list, it allows for fast
 accesses, insertions, and removals at the beginning and end, but slower random
-access. Lists are generally faster than deques, except for when a double ended
-queue is needed. Deques have type `Deque`.
+accesses to arbitrary location in the list. Lists are generally faster than
+deques, except for when a double ended queue is needed. Deques have type
+`Deque`.
 
 ```kaki
 Deque.new(1, 2, 3)
 d = Deque.from([1, 2, 3])
 d.push_front(0)
 d.push_back(4)
+```
+
+A `Deque` literal can be created using `@[]`.
+
+```kaki
+@[] # Empty deque
+@[1, 2, 3] # Same as Deque.new(1, 2, 3)
 ```
 
 ## Sets
@@ -38,6 +46,14 @@ Sets, of type `Set`, are an unordered collection of unique values.
 Set.new(1, 2, 3)
 Set.new("one", 2, true)
 Set.from([1, 2, 3])
+```
+
+A `Set` literal can be created using `@{}`.
+
+
+```kaki
+@{} # Empty set
+@{1, 2, 3} # Same as Set.new(1, 2, 3)
 ```
 
 For a type to be stored in a set, it must implement the `Hash` trait.
