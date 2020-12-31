@@ -40,8 +40,8 @@ such as the logical and `&&`, which operates on `Bool` only.
 | `/=`     | Divide assign           | `a /= b`                   | `DivAssign`      |
 | `/`      | Divide                  | `a / b`                    | `Div`            |
 | `::`     | Namespace access        | `a::b`                     |                  |
+| `:`      | Keyword argument        | `fn f(x:) {}`              |                  |
 | `:`      | Map separator           | `{a: b}`                   |                  |
-| `:`      | Type specifier          | `a: T`                     |                  |
 | `;`      | Expression terminator   | `a; b`                     |                  |
 | `<<=`    | Shift left assign       | `a <<= b`                  | `ShLeftAssign`   |
 | `<<`     | Shift left              | `a << b`                   | `ShLeft`         |
@@ -50,7 +50,6 @@ such as the logical and `&&`, which operates on `Bool` only.
 | `<`      | Less than               | `a < b`                    | `Ord`            |
 | `==`     | Equal                   | `a == b`                   | `Eq` or `Ord`    |
 | `=`      | Assign                  | `a = b`                    |                  |
-| `=`      | Keyword argument        | `fn f(x=) {}`              |                  |
 | `>=`     | Greater than or equal   | `a >= b`                   | `Ord`            |
 | `>>=`    | Shift right assign      | `a >>= b`                  | `ShRightAssign`  |
 | `>>`     | Shift right             | `a >> b`                   | `ShRight`        |

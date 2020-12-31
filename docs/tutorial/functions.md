@@ -77,9 +77,9 @@ order:
     empty list, `[]`
 4.  **Keyword** arguments are arguments which are always passed by name, but
     are position independent. Keyword arguments are specified and passed in the
-    form `name = value`. A keyword aergument is specified in the function
-    signature using a trailing `=`, such as `a=`. Keyword arguments are
-    required unless specified with a leading `?`, such as `?a=`. When optional
+    form `name: value`. A keyword aergument is specified in the function
+    signature using a trailing `:`, such as `a:`. Keyword arguments are
+    required unless specified with a leading `?`, such as `?a:`. When optional
     keywords are not specified they take on the value of `none`. A catch all
     variable for keywords (similar to variadic arguments) can be defined using
     a prefix `**`. If none are given then the value is the empty hash map,
@@ -128,17 +128,17 @@ Keyword arguments are a bit more complex.
 
 ```kaki
 # Basic keyword arguments
-fn f(a=, ?b=) {}
-f()                  # Error, a is required
-f(a = 10)            # a = 10, b = none
-f(a = 10, b = "two") # a = 10, b = "two"
+fn f(a:, ?b:) {}
+f()                # Error, a is required
+f(a: 10)           # a = 10, b = none
+f(a: 10, b: "two") # a = 10, b = "two"
 
 # Catch all keyword arguments
-fn f(a=, b=?, **kws) {}
-f(a = 10, c = 50)           # a = 10, b = none, kws = {"c": 50}
-f(a = 10, c = 50, d = true) # a = 10, b = none, kws = {"c": 50, "d": true}
+fn f(a:, b:?, **kws) {}
+f(a: 10, c: 50)           # a = 10, b = none, kws = {"c": 50}
+f(a: 10, c: 50, d = true) # a = 10, b = none, kws = {"c": 50, "d": true}
 # Splat all keyword arguments
-f(b = 30, **{"a": 1000, "d": false}) # a = 1000, b = 30, kws = {"d": false}
+f(b: 30, **{"a": 1000, "d": false}) # a = 1000, b = 30, kws = {"d": false}
 ```
 
 We already saw one way to pass block arguments, but there are more options.
@@ -172,14 +172,14 @@ These can be combined all together, but the order of the arguments must be the
 same as the above.
 
 ```kaki
-fn f(a, ?b, *c, d=, **e, &f) {}
+fn f(a, ?b, *c, d:, **e, &f) {}
 
 fn block_func(n, m) {
   n * m
 }
 
 f(1, 2, 3, 4, 5, *[6, 7], 8,
-  z = 50, **{"d": 30, "x": false}, y = 10,
+  z: 50, **{"d": 30, "x": false}, y: 10,
   &block_func)
 
 # The function arguments to f are:
@@ -198,16 +198,16 @@ value `none`. Defaults can quickly be given to these arguments using the none
 coalescing operator, `?=`.
 
 ```kaki
-fn f(?a, ?b=) {
+fn f(?a, ?b:) {
   a ?= 10
   b ?= 20
   a + b
 }
 
-f()       #=> 30
-f(5)      #=> 25
-f(b=100)  #=> 110
-f(1, b=2) #=> 3
+f()        #=> 30
+f(5)       #=> 25
+f(b: 100)  #=> 110
+f(1, b: 2) #=> 3
 ```
 
 ## Block Shorthand
