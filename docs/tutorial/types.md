@@ -6,91 +6,91 @@ The most basic type is declared like:
 type A {}
 ```
 
-but it is not very useful since it is unable to do anything.
+but it is not very useful since it is unable to do anything. Let's see how extra
+functionality can be added to it.
 
 ## Constructors
 
 Types are created to store data and operations on them. A _constructor_ is used
-to build an _instance_ of a type.
+to build an _instance_ of a type. In this example, a type which stores a vector
+of three values will be created and built upon.
 
 ```kaki
-type Dog {
-  pub cons new() {
-    println("I am a dog!")
+type Vec3 {
+  pub cons new(x, y, z) {
+    @x = x
+    @y = y
+    @z = z
   }
 }
 
-Dog.new()
+# Create an instance of the type using the constructor.
+Vec3.new(1, 2, 3)
 ```
 
-A constructor can be named anything,
+A constructor can take any name. By convention, a constructor which creates an
+instance of the type from its constituent parts should have the name `new`,
+while a constructor which creates the type from something similar should have
+the name `from`, such as:
 
 ```kaki
-type Dog {
-  pub cons red() {
-    println("I am a red dog!")
+type Vec3 {
+  pub cons from(xs) {
+    @x, @y, @z = xs
   }
 }
-
-Dog.red()
 ```
 
-though a generic constructor should have the name `new`.
+There is no limit on the number of constructors which can be used. To create a
+vector of all zeros, the following constructor could be used:
+
+```kaki
+type Vec3 {
+  pub cons zeros() {
+    @x = 0
+    @y = 0
+    @z = 0
+  }
+}
+```
 
 ## Fields
 
 An instance is created using a constructor, and the instance data, called
-_fields_, can be set up in a constructor. Fields hold private data, and their
-names are prefixed with `@`. A field always takes the value of `none` before it
-assigned.
+_fields_, can be set up in a constructor (as shown above). Fields hold private
+data which can only be accessed within the type itself, and the field names are
+prefixed with `@`. A field always takes the value of `none` before it assigned.
 
-```kaki
-type Dog {
-  pub cons new(name) {
-    @name = name
-  }
-}
-```
-
-Now a `Dog` can be created with
-
-```kaki
-dog = Dog.new("Rover")
-```
+In the case of `Vec3`, it has 3 fields: `@x`, `@y`, and `@z`.
 
 ## Methods
 
 _Methods_ can be added to a type, which are functions that are bound to it.
 
 ```kaki
-type Dog {
-  pub cons new(name) {
-    @name = name
-  }
-  pub self.speak() {
-    println("Woof! I am {}.", @name)
+type Vec3 {
+  pub self.as_list() {
+    [@x, @y, @z]
   }
 }
-```
 
-which can be called like
-
-```kaki
-dog.speak()
+v = Vec3.new(1, 2, 3)
+v.as_list() #=> [1, 2, 3]
 ```
 
 Notice the inclusion of the new `self` name? This is a reference to the type
 instance. It tells the type that this is an instance method, instead of of a
 _static_ method. If the `self` is left out of the signature, the method is
-implicitly an instance method. The same is true for _properties_, which are
+implicitly an instance method. Including it is somewhat of a formality in this
+example, though the reason for its presence use will become apparent in the
+discussion of _static methods_. The same is true for _properties_, which are
 discussed in the next section. Knowing this, the above definition can be
 written as:
 
 ```kaki
-type Dog {
-  # ...
-  pub speak() {
-    println("Woof! I am {}.", name)
+type Vec3 {
+  pub as_list() {
+    [@x, @y, @z]
   }
 }
 ```
@@ -100,50 +100,93 @@ additionally, they implicitly define a value named `self`, which is a reference
 to the instance of the type. This is useful for calling other methods.
 
 ```kaki
-type Dog {
-  pub cons new(name, color) {
-    @name = name
-    @color = color
+type Vec3 {
+  # Get the length of the vector
+  pub length() {
+    (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
   }
-  pub name() { @name }
-  pub color() { @color }
-  pub description(something_nice) {
-    "My dog {} is {} and {}!".fmt(self.name(), self.color(), something_nice)
+
+  # Scale a vector by a constant value. The direction
+  # is preserved but the length is changed.
+  pub scale(c) {
+    Vec3.new(c * @x, c * @y,  c * @z)
+  }
+
+  # Compute a unit vector, which is a vector with the
+  # same direction, but length of 1
+  pub unit() {
+    self.scale(1 / self.length())
   }
 }
-
-dog = Dog.new("Rover", "brown")
-println(dog.description("he is the best"))
-# My dog Rover is brown and he is the best!
 ```
 
 ## Properties
 
 Consider the previous example, this is a useful time to use _properties_.
-Properties are like methods, but they are used for accessing data.
+Properties are like methods, but they are used for accessing data. They do not
+accept any arguments, and are used to access data in a way that looks transparent
+- there may be no backing data, it can be computed on the fly!
+
+For `Vec3`, rather than the `length()` method, let's put it in a property
+called `len`.
 
 ```kaki
-type Dog {
-  # ...
-  pub name { @name }
-  pub color { @color }
-  pub description(something_nice) {
-    "My dog {} is {} and {}!".fmt(self.name, self.color, something_nice)
+type Vec3 {
+  pub len() {
+    (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
   }
 }
+
+v = Vec3.new(4, -1, 8)
+v.len #=> 3
 ```
+
+Here, a property was used to compute the length of the vector. Properties can
+also be used to expose data in fields.
+
+```kaki
+type Vec3 {
+  pub x { @x }
+  pub y { @y }
+  pub z { @z }
+}
+
+v = Vec3.new(4, -1, 8)
+v.x #=> 4
+v.y #=> -1
+v.z #=> 8
+```
+
+These properties can be used to access data, but they cannot be used to change
+it. In order to change the data, setter proerties can be created.
+
 
 Properties also allow modifying data.
 
 ```kaki
-type Dog {
-  # ...
-  pub name { @name }
-  pub name = name { @name = name }
-  pub color { @color }
-  pub color = color { @color = color }
-  # ...
+type Vec3 {
+  pub x = value {
+    @x = value
+  }
+
+  pub y = value {
+    @y = value
+  }
+
+  pub z = value {
+    @z = value
+  }
 }
+
+v = Vec3.new(4, -1, 8)
+
+# Use the setter properties
+v.y = 5
+v.z = 6
+
+v.x #=> 4
+v.y #=> 5
+v.z #=> 6
 ```
 
 Since properties are just methods, they can run any arbitrary code. This is
@@ -159,29 +202,33 @@ didn't declare them pub, they would only be available within the type.
 Let's see how this works.
 
 ```kaki
-type Circle {
-  pub cons new(radius) {
-    @radius = radius
+type Vec3 {
+  # This is private
+  is_zero? {
+    return @x == 0 && @y == 0 && @z == 0
   }
-  pub circumference {
-    3.141_593 * self.diameter
-  }
-  # This property is not public
-  diameter {
-    2 * @radius
+
+  # This is public
+  pub unit() {
+    if self.is_zero? {
+      Vec3.new(0, 0, 0)
+    } else {
+      self.scale(1 / self.length())
+    }
   }
 }
 ```
 
-Notice that the `diameter` property is not declared as `pub`. `diameter` is
-used in `circumference`, which is valid because `circumference` is still within
-the `Circle` type. However, `diameter` cannot be used outside of the `Circle`
-definition.
+Here, the `is_zero?` property is private because we do not wish to expose it as
+part of a public API. It is used as a check to fix our previous implementation
+for `unit()`, which encounters a divide by zero when the length of the vector
+is 0.
+
+If we try to use `is_zero?` outside of the type, it causes a runtime error.
 
 ```kaki
-c = Circle.new(3)
-println("circumference = {}", c.circumference) # Works!
-println("diameter = {}", c.diameter) # Error! diameter is not pub
+v = Vec3.new(1, 2, 3)
+v.is_zero? # Oops! is_zero? cannot be used in this context
 ```
 
 ## Static
@@ -194,6 +241,9 @@ First, consider static fields. They behave like instance fields, but are
 prefixed with `@@` instead of `@`. Like instance fields, static fields have a
 value of `none` before they are assigned.
 
+For a moment we will abandon our example of `Vec3` and consider some other type
+implementations.
+
 ```kaki
 # This type counts how many instances of it have been made
 # (which is the same as the number of times `new` has been
@@ -203,7 +253,7 @@ type InstanceCounter {
     if @@counter == none {
       @@counter = 0
     }
-    @@counter = @@counter + 1
+    @@counter += 1
   }
   pub count { @@counter }
 }
@@ -250,8 +300,9 @@ type Circle {
   # circle of any radius
   pub Self.area(radius) { 3.141_593 * radius ** 2 }
 
-  # Use the generic area method for computing the area of
-  # this specific circle
-  pub radius { Self.area(@radius) }
+  # Create an instance method for computing the area of
+  # the specific circle in the instance described by the
+  # instance
+  pub area { Self.area(@radius) }
 }
 ```
