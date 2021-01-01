@@ -101,7 +101,8 @@ to the instance of the type. This is useful for calling other methods.
 
 ```kaki
 type Vec3 {
-  # Get the length of the vector
+  # Get the length of the vector. This is given by
+  # the trusty Pythagorean theorem.
   pub length() {
     (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
   }
@@ -120,19 +121,31 @@ type Vec3 {
 }
 ```
 
+In `scale()`, a new `Vec3` is created. Instead of referencing `Vec3` directly,
+`Self` can be used, which refers to the type to which the method belongs.
+
+```kaki
+type Vec3 {
+  pub scale(c) {
+    Self.new(c * @x, c * @y,  c * @z)
+  }
+}
+```
+
 ## Properties
 
 Consider the previous example, this is a useful time to use _properties_.
 Properties are like methods, but they are used for accessing data. They do not
-accept any arguments, and are used to access data in a way that looks transparent
-- there may be no backing data, it can be computed on the fly!
+accept any arguments, and therefore are not called with parentheses, and are
+used to access data in a way that looks transparent - there may be no backing
+data, it can be computed on the fly!
 
 For `Vec3`, rather than the `length()` method, let's put it in a property
 called `len`.
 
 ```kaki
 type Vec3 {
-  pub len() {
+  pub len {
     (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
   }
 }
@@ -168,11 +181,9 @@ type Vec3 {
   pub x = value {
     @x = value
   }
-
   pub y = value {
     @y = value
   }
-
   pub z = value {
     @z = value
   }
@@ -205,15 +216,15 @@ Let's see how this works.
 type Vec3 {
   # This is private
   is_zero? {
-    return @x == 0 && @y == 0 && @z == 0
+    @x == 0 && @y == 0 && @z == 0
   }
 
   # This is public
   pub unit() {
     if self.is_zero? {
-      Vec3.new(0, 0, 0)
+      Self.new(0, 0, 0)
     } else {
-      self.scale(1 / self.length())
+      self.scale(1 / self.len)
     }
   }
 }
@@ -259,10 +270,15 @@ type InstanceCounter {
 }
 
 i1 = InstanceCounter.new()
-println(i1.count) #=> 1
+
+i1.count #=> 1
+
 i2 = InstanceCounter.new()
-println(i1.count) #=> 2
-println(i2.count) #=> 2
+
+# Both of these are the same as both instances access
+# the same underlying data in @@counter
+i1.count #=> 2
+i2.count #=> 2
 ```
 
 Static methods and properties are similar to instance methods and properties,
@@ -284,8 +300,8 @@ Static methods and properties are declared using the `Self` reference. These
 static methods and properties can be used in the following way:
 
 ```kaki
-println(Calculations.pi)
-println(Calculations.circle_area(5))
+Calculations.pi #=> 3.141593
+Calculations.circle_area(5) #=>  3.141593 * 2578.539825
 ```
 
 Static methods can also be called in an instance context.
@@ -296,13 +312,17 @@ type Circle {
     @radius = radius
   }
 
-  # Create a static method that can compute the area of a
+  # A static method that can compute the area of a
   # circle of any radius
-  pub Self.area(radius) { 3.141_593 * radius ** 2 }
+  pub Self.area(radius) {
+    3.141_593 * radius ** 2
+  }
 
-  # Create an instance method for computing the area of
-  # the specific circle in the instance described by the
-  # instance
-  pub area { Self.area(@radius) }
+  # An instance method for computing the area of the
+  # specific circle described by the instance
+  pub area {
+    # The static method is reused for this computation
+    Self.area(@radius)
+  }
 }
 ```
