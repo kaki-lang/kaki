@@ -38,6 +38,8 @@ type Vec3 {
   pub cons from(xs) {
     @x, @y, @z = xs
   }
+
+  # ...
 }
 ```
 
@@ -51,6 +53,8 @@ type Vec3 {
     @y = 0
     @z = 0
   }
+
+  # ...
 }
 ```
 
@@ -72,6 +76,8 @@ type Vec3 {
   pub self.as_list() {
     [@x, @y, @z]
   }
+
+  # ...
 }
 
 v = Vec3.new(1, 2, 3)
@@ -92,6 +98,8 @@ type Vec3 {
   pub as_list() {
     [@x, @y, @z]
   }
+
+  # ...
 }
 ```
 
@@ -118,6 +126,8 @@ type Vec3 {
   pub unit() {
     self.scale(1 / self.length())
   }
+
+  # ...
 }
 ```
 
@@ -129,6 +139,8 @@ type Vec3 {
   pub scale(c) {
     Self.new(c * @x, c * @y,  c * @z)
   }
+
+  # ...
 }
 ```
 
@@ -148,6 +160,8 @@ type Vec3 {
   pub len {
     (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
   }
+
+  # ...
 }
 
 v = Vec3.new(4, -1, 8)
@@ -162,6 +176,8 @@ type Vec3 {
   pub x { @x }
   pub y { @y }
   pub z { @z }
+
+  # ...
 }
 
 v = Vec3.new(4, -1, 8)
@@ -187,6 +203,8 @@ type Vec3 {
   pub z = value {
     @z = value
   }
+
+  # ...
 }
 
 v = Vec3.new(4, -1, 8)
@@ -227,6 +245,8 @@ type Vec3 {
       self.scale(1 / self.len)
     }
   }
+
+  # ...
 }
 ```
 

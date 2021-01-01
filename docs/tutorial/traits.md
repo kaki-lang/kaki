@@ -1,83 +1,132 @@
 # Traits
 
-**TODO Intro**
-
-**TODO Explain operator overloading**
-
-## Definition
-
 Traits are used to add functionality to a type. They describe what a type can
-do. Traits consist of only instance and static methods and properties.
-Additionally, traits  can mark methods as `abstract`, which means that whatever
-implements the trait must define it.
+do. Traits consist of only instance methods and properties, and as such, are
+only useful in an instance context. Traits are similar to the concept of
+_abstract classes_ in object-oriented programming, but offer greater
+flexibility.
+
+## An Example
+
+This example shows the creation of a `ReverseItems` trait that can be used to
+reverse the items of a collection. The trait provides a method named
+`reverse_items()` that can be used to reverse the items of a collection an
+retain the original type of the collection.
 
 ```kaki
-trait Greater {
-  abstract greater?(other)
-  pub self > other { self.greater?(other) }
-  pub self < other { other.greater?(self) }
+trait ReverseItems {
+  # Returns a list of the items in the collection
+  abstract items_to_reverse()
+
+  # Builds a new collection of the same type from
+  # the reversed items
+  abstract from_reversed_items(items)
+
+  # The "useful" method that is actually used to
+  # reverse the items. This is the one that should
+  # be used outside of the type
+  pub reverse_items() {
+    items = self.items_to_reverse()
+    reversed = items.reverse()
+    self.from_reverse_items(reversed)
+  }
 }
 ```
 
-This trait steals similar logic from the built-in `Order` trait, which defines
-comparison and equality operators (`>`, `>=`, `<=`, `<`, `==`, and `!=`) in
-terms of a single method.
-
-Something that implements `GreaterThan` must define the `greater?` method.
+`ReverseItems` can be implemented for the `Vec3` type from the previous
+section. Recall the definition of `Vec3` to be:
 
 ```kaki
-type Pair : GreaterThan {
-  pub cons new(x, y) {
+type Vec3 {
+  pub cons new(x, y, z) {
     @x = x
     @y = y
+    @z = z
   }
-  pub magnitude {
-    (x ** 2 + y ** 2) ** 0.5
-  }
-  greater?(other) {
-    self.magnitude > other.magnitude
-  }
+
+  # ...
 }
 ```
 
-Then the `>` operator can be used like:
+This definition can be modified to implement the `ReverseItems` trait as:
 
 ```kaki
-p = Pair.new(3, 6)
-q = Pair.new(4, 5)
-println(p > q)
+type Vec3: ReverseItems {
+  pub cons new(x, y, z) {
+    @x = x
+    @y = y
+    @z = z
+  }
+
+  items_to_reverse() {
+    [@x, @y, @z]
+  }
+
+  from_reversed_items(items) {
+    Self.new(*items)
+  }
+
+  # ...
+}
 ```
+
+This can be used in an example, such as:
+
+```kaki
+v = Vec3.new(1, 2, 3)
+v.x #=> 1
+v.y #=> 2
+v.z #=> 3
+r = v.reverse_items()
+r.x #=> 3
+r.y #=> 2
+r.z #=> 1
+```
+
+The powerful feature of traits is that they can provide complex functionality
+by by only requiring the type to implement a handful of methods. An example of
+this is the `Order` trait, which implements the operators `<`, `<=`, `>=`, `>`,
+`<=>`, `==`, and `!=` in terms of a single method supplied by the type.
 
 ## Visibility
 
-Notice that the `GreaterThan` trait used two modifiers that affect visibility:
+Notice that the `ReverseItems` trait used two modifiers that affect visibility:
 `abstract` and `pub`.
 
-- `abstract` methods always have an implicit `pub` modifier.
+- `abstract` methods are private by default. They can optionally have a `pub`
+   modifier if they are intended to be used outside of the trait.
 - `pub` methods are visible everywhere: to implementing types and traits, and
   anywhere else they appear.
 
-Like with types, trait methods that are not `pub` are only available for use in the trait itself.
+Like with types, trait methods that are not `pub` are only available for use in
+the trait itself. We see that in the `ReverseItems` trait, that the abstract
+methods `items_to_reverse()` and `from_reversed_items(items)` are private and
+are not able to be used outside the trait or the implementing type. Since
+`abstract` methods are private by default, to be used outside of the
+implementing type and trait they must be declared as `pub abstract`.
+
+## Trait Constructors and Fields
+
+Traits may optionally use a single constructor, which is unnamed, private, and
+cannot be called directly. The constructor is automatically run when the type
+is instantiated, and can used to initialize any data stored in fields on trait.
+Consequently, traits cannot access the fields of their implementing types.
 
 ```kaki
-trait Counter {
+trait StoreSingleValue {
   cons {
-    @count = 0
+    @value = None
   }
-  pub increment() {
-    @count = @count + 1
-    if self.special?() {
-      println("Congratualtions, you counted to {}", @count)
-    }
+
+  pub value {
+    @value
   }
-  special?() {
-    @count == 100
+
+  pub value = x {
+    @value = x
   }
 }
 ```
-
-Types that implement `Counter` only see the `increment()` method, but `Counter`
-can still use `special?()` in its own internal logic.
 
 ## Resolution
 
@@ -87,11 +136,11 @@ list again, only the name. For example:
 
 ```kaki
 trait A {
-  pub abstract some_method(a, b, c)
+  abstract some_method(a, b, c)
 }
 
 trait B : A {
-  pub abstract some_method
+  abstract some_method
 }
 ```
 
@@ -109,9 +158,9 @@ it.
 trait A {}
 trait B {}
 trait C {}
-trait D : A {}
-trait E : D, B {}
-type T : D, B, E, A {}
+trait D: A {}
+trait E: D, B {}
+type T: D, B, E, A {}
 ```
 
 The following dependency graph can then be made for `T`.
@@ -136,7 +185,8 @@ conflicts are resolved in a predictable way. Name conflicts are resolved by
 selecting the name that appears left most in the trait list on the type.
 
 The first step in determining trait inclusion order is to perform a depth first
-search from the left to the right, which gives
+search from the left to the right and writing down every node in the order that
+they are first encountered, which gives
 
 ```
 D A B E D C B A
@@ -158,9 +208,10 @@ C E B A D
 That means that the following steps are taken when `T` is created.
 
 > **Note**: All traits and types implicitly implement the `Any` trait, and
-> it is also the least significant in the inclusion order.
+> it is also the least significant in the inclusion order, so it is always
+> included first, regardless of where it appears in trit list.
 
-1.  Create an empty type `T`
+1.  Create the empty type, `T`
 2.  Add methods from `Any` to `T`
 3.  Add methods from `C` to `T`
 4.  Add methods from `E` to `T`
