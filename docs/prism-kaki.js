@@ -24,11 +24,11 @@
       /\b((\d(_?\d)*\.)?(\d(_?\d)*)([eE][+-]?\d(_?\d)*)?)\b/
     ],
     'constant': {
-      pattern: /_*[A-Z][A-Z_0-9]*(?![a-z])(!|\?)?/,
+      pattern: /(?<![a-z])_*[A-Z][A-Z_0-9]*(?![a-z])(!|\?)?/,
       alias: 'number'
     },
     'type-trait': {
-      pattern: /_*[A-Z][A-Za-z_0-9]*(?![a-z])(!|\?)?/,
+      pattern: /_*[A-Z][A-Za-z_0-9]*(!|\?)?/,
       alias: 'variable'
     },
     'variable': /_*[a-z][a-z0-9_]*(!|\?)?/,

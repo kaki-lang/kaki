@@ -1,20 +1,16 @@
 # Advanced Typing
 
-This section discusses some advanced concepts related to types and traits. Far more functionality is offered than what was seen in
-
-> TODO Trait disambiguation
-
-> TODO Operator overloading
+This section discusses some advanced concepts related to types and traits. Far
+more functionality is offered than what was seen in the types and traits
+sections.
 
 ## Types of Types
 
 Types and traits themselves have a type, they are `Type` and `Trait`
-respectively.
-
-There are also more powerful types available, such as `Types` and `Traits`
-(note the plural). These represent sets of types and traits, and can be used to
-specify type constraints. `Traits` is simpler than `Types`, so it is presented
-first.
+respectively. There are also more powerful types available, such as `Types` and
+`Traits` (note the plural). These represent sets of types and traits, and can
+be used to specify type constraints. `Traits` is simpler than `Types`, so it is
+presented first.
 
 `Traits` is used to represent a set of traits. It is created by _adding_ traits
 together. For example, suppose that a type that implements `Hash` and `Order`
@@ -141,9 +137,100 @@ type Vec3 {
 }
 ```
 
-## Anonymous Types and Traits
+## Trait Disambiguation
 
-!> TODO This section needs improvement
+There are two notable cases where traits can have methods with the same names:
+
+1.  Traits have the same names for abstract methods and the abstract methods
+    require different implementations,
+2.  Traits have the same names for provided methods and the caller wants to use
+    a specific one.
+
+Consider two traits, `TraitA` and `TraitB`:
+
+```kaki
+trait TraitA {
+  abstract message()
+  pub show() {
+    "From TraitA: {}".fmt(self.message())
+  }
+}
+
+trait TraitB {
+  abstract message()
+  pub show() {
+    "From TraitB: {}".fmt(self.message())
+  }
+}
+```
+
+Both traits require abstract methods of the same name, `message()` and provide
+methods of the same name, `show()`.
+
+To provide separate implementations for these traits, they can be disambiguated
+at the time of definition by including the trait name in the method
+declaration.
+
+```kaki
+type SomeType: TraitA, TraitB {
+  pub cons new() {}
+
+  TraitA.message() {
+    "Hello!"
+  }
+
+  TraitB.message() {
+    "Greetings!"
+  }
+
+  pub greet() {
+    # Which message() is going to be called?
+    self.message()
+  }
+}
+```
+
+The `greet()` method calls `self.message()`, but will it call the method on
+`TraitA` or `TraitB`? The `message()` method from `TraitA` will be used,
+because it appears earlier in the trait list on `SomeType`. This does not
+depend on the order that `SomeType` declares its methods, it is decided
+entirely by trait linearization.
+
+Given an instance of `SomeType`, if the `message()` method is called on it, is
+`TraitA.message()` or `TraitB.message()` called? It is the same as before,
+where `TraitA.message()` is used. If the desired behaviour is to use
+`TraitB.message`, then a cast must be performed. There are a number of ways to perform a cast.
+
+```kaki
+s = SomeType.new()
+
+# Cast on assignment
+b TraitB = s
+
+# Cast as an expression
+b = (s TraitB)
+```
+
+Both types of casting shown have different uses. A cast on assignment is useful
+if casts are frequently, but introduces a new variable. Casts on assignment are
+implicit in functions which specificy a trait type. Casts as an expression are
+useful as part of a larger expression. Both uses are shown below.
+
+```kaki
+s = SomeType.new()
+b TraitB = s
+
+fn show_as_trait_b(b TraitB) {
+  b.show()
+}
+
+s.show()           #=> "From TraitA: Hello!"
+b.show()           #=> "From TraitB: Greetings!"
+show_as_trait_b(s) #=> "From TraitB: Greetings!"
+(s TraitB).show()  #=> "From TraitB: Greetings!"
+```
+
+## Anonymous Types and Traits
 
 It would be useful if types (and some times) traits could be created on the
 fly, like as a return value from a function. This is simple: don't give the it
@@ -193,20 +280,22 @@ fn count_by(step_size) {
       @count = @count + step_size
     }
     count { @count }
-  }
+  }.new()
+  # Here the new() constructor was called at the end
+  # to return an instance, rather than the type itself
 }
 
 count_by_1 = count_by(1)
 count_by_1.increment()
 count_by_1.increment()
 count_by_1.increment()
-println(count_by_1.count) #=> 3
+count_by_1.count #=> 3
 
 count_by_5 = count_by(5)
 count_by_5.increment()
 count_by_5.increment()
 count_by_5.increment()
-println(count_by_5.count) #=> 15
+count_by_5.count #=> 15
 ```
 
 Of course we could have named this anonymous type in the declaration, but we
@@ -220,10 +309,53 @@ pair = type {
     @left = left
     @right = right
   }
-  left { @left }
-  right { @right }
+  pub left { @left }
+  pub right { @right }
 }.new(4, 7)
-println("left = {}, right = {}", pair.left, pair.right)
+
+"left = {}, right = {}".fmt(pair.left, pair.right)
+#=> "left = 4, right = 7"
 ```
 
-Anywhere a variable can be created, an anonymous type or trait can be used as well.
+Anywhere a variable can be created, an anonymous type or trait can be used as
+well.
+
+## Operator Overloading
+
+Operators can be overloaded by implementing specific traits. Recall the `Vec3`
+type defined in the types section:
+
+```kaki
+type Vec3 {
+  pub cons new(x, y, z) {
+    @x = x
+    @y = y
+    @z = z
+  }
+  pub x { @x }
+  pub y { @y }
+  pub z { @z }
+}
+```
+
+When vectors are added, their elements are added pairwise to produce a new
+vector of the same length. This functionality will be added by implementing
+the `Add` trait.
+
+```kaki
+type Vec3: Add {
+  # ...
+
+  Add.add(other) {
+    Self.new(@x + other.x, @y + other.y, @z + other.z)
+  }
+}
+
+v1 = Vec3.new(1, 2, 3)
+v2 = Vec3.new(6, -7, 8)
+v3 = v1 + v2
+
+v3.x #=> 7
+v3.y #=> -5
+v3.z #=> 11
+```
