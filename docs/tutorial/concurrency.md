@@ -24,17 +24,9 @@ fiber = Fiber.new { |x|
   Fiber.yield("sum = {}".fmt(x + y + z))
 }
 
-println(fiber(1))
-println(fiber(2))
-println(fiber(3))
-```
-
-This prints:
-
-```
-first time yielding
-second time yielding
-sum = 6
+fiber(1) #=> "first time yielding"
+fiber(2) #=> "second time yielding"
+fiber(3) #=> "sum = 6"
 ```
 
 When a `Fiber` yields, it returns whatever is supplied as its argument.
@@ -50,14 +42,14 @@ squares = Fiber.new {
   n = 1
   loop {
     Fiber.yield(n ** 2)
-    n = n + 1
+    n += 1
   }
 }
 
-println(squares()) #=> 1
-println(squares()) #=> 4
-println(squares()) #=> 9
-println(squares()) #=> 16
+squares() #=> 1
+squares() #=> 4
+squares() #=> 9
+squares() #=> 16
 ```
 
 # Threads

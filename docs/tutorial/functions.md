@@ -80,7 +80,7 @@ order:
     form `name: value`. A keyword aergument is specified in the function
     signature using a trailing `:`, such as `a:`. Keyword arguments are
     required unless specified with a leading `?`, such as `?a:`. When optional
-    keywords are not specified they take on the value of `none`. A catch all
+    keywords are not specified they take on the value of `none`. A catch-all
     variable for keywords (similar to variadic arguments) can be defined using
     a prefix `**`. If none are given then the value is the empty hash map,
     `{}`.
@@ -133,8 +133,8 @@ f()                # Error, a is required
 f(a: 10)           # a = 10, b = none
 f(a: 10, b: "two") # a = 10, b = "two"
 
-# Catch all keyword arguments
-fn f(a:, b:?, **kws) {}
+# Catch-all keyword arguments
+fn f(a:, ?b:, **kws) {}
 f(a: 10, c: 50)           # a = 10, b = none, kws = {"c": 50}
 f(a: 10, c: 50, d = true) # a = 10, b = none, kws = {"c": 50, "d": true}
 # Splat all keyword arguments

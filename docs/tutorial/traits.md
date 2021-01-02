@@ -208,8 +208,8 @@ C E B A D
 That means that the following steps are taken when `T` is created.
 
 > **Note**: All traits and types implicitly implement the `Any` trait, and
-> it is also the least significant in the inclusion order, so it is always
-> included first, regardless of where it appears in trit list.
+> it is also the least significant in the inclusion order. `Any` is always
+> included first regardless of where it appears in trit list.
 
 1.  Create the empty type, `T`
 2.  Add methods from `Any` to `T`

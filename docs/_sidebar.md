@@ -15,7 +15,7 @@
   - [Functions](tutorial/functions.md)
   - [Types](tutorial/types.md)
   - [Traits](tutorial/traits.md)
-  - [Anonymous Types and Traits](tutorial/anonymous-types-traits.md)
+  - [Advanced Typing](tutorial/advanced-typing.md)
   - [Modules](tutorial/modules.md)
   - [Concurrency](tutorial/concurrency.md)
   - [Errors](tutorial/errors.md)

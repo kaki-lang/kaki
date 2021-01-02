@@ -10,7 +10,7 @@
         lookbehind: true
       }
     ],
-    'keyword': /\b(_|abstract|break|cons|continue|else|for|fn|if|in|loop|pub|return|self|Self|trait|type|use|while)\b/,
+    'keyword': /\b(_|abstract|alias|break|cons|continue|else|for|fn|if|in|loop|pub|return|self|Self|trait|type|use|where|while)\b/,
     'boolean': /\b(false|none|true)\b/,
     'function': /@?@?_*[a-z][a-z0-9_]*(!|\?)?(?=\s*\()/,
     'field': {

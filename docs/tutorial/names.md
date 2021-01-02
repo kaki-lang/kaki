@@ -51,8 +51,8 @@ The following words are reserved by the language, and cannot be used for any
 of the above:
 
 ```kaki
-_ abstract break cons continue else false for fn if in
-loop none pub return self Self trait true type use while
+_ abstract alias break cons continue else false for fn if in
+loop none pub return self Self trait true type use where while
 ```
 
 The underscore `_` on its own is a special name with special semantics. It is a
