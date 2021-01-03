@@ -11,7 +11,7 @@ such as the logical and `&&`, which operates on `Bool` only.
 
 | Operator | Description             | Example                    | Overload         |
 |----------|-------------------------|----------------------------|------------------|
-| `!=`     | Not equal               | `a != b`                   | `Eq` or `Ord`    |
+| `!=`     | Not equal               | `a != b`                   | `Eq` or `Order`  |
 | `!`      | Logical NOT             | `!a`                       | `Not`            |
 | `%=`     | Modulo assign           | `a %= b`                   | `ModAssign`      |
 | `%`      | Modulo                  | `a % b`                    | `Mod`            |
@@ -45,21 +45,23 @@ such as the logical and `&&`, which operates on `Bool` only.
 | `;`      | Expression terminator   | `a; b`                     |                  |
 | `<<=`    | Shift left assign       | `a <<= b`                  | `ShLeftAssign`   |
 | `<<`     | Shift left              | `a << b`                   | `ShLeft`         |
-| `<=>`    | Total comparison        | `a <=> b`                  | `Ord`            |
-| `<=`     | Less than or equal      | `a <= b`                   | `Ord`            |
-| `<`      | Less than               | `a < b`                    | `Ord`            |
-| `==`     | Equal                   | `a == b`                   | `Eq` or `Ord`    |
+| `<=>`    | Total comparison        | `a <=> b`                  | `Order`          |
+| `<=`     | Less than or equal      | `a <= b`                   | `Order`          |
+| `<`      | Less than               | `a < b`                    | `Order`          |
+| `==`     | Equal                   | `a == b`                   | `Eq` or `Order`  |
 | `=`      | Assign                  | `a = b`                    |                  |
-| `>=`     | Greater than or equal   | `a >= b`                   | `Ord`            |
+| `>=`     | Greater than or equal   | `a >= b`                   | `Order`          |
 | `>>=`    | Shift right assign      | `a >>= b`                  | `ShRightAssign`  |
 | `>>`     | Shift right             | `a >> b`                   | `ShRight`        |
-| `>`      | Greater than            | `a > b`                    | `Ord`            |
+| `>`      | Greater than            | `a > b`                    | `Order`          |
 | `?=`     | None coalescing assign  | `a ?= b`                   |                  |
 | `?`      | Optional argument       | `fn f(?x) {}`              |                  |
+| `@[`     | New `Deque`             | `@[1, 2, 3]`               |                  |
+| `@{`     | New `Set`               | `@{1, 2, 3}`               |                  |
 | `[] =`   | Subscript assign        | `a[b] = c`                 | `IndexAssign`    |
 | `[]`     | List creation           | `[a, b, c]`                |                  |
 | `[]`     | Subscript               | `a[b]`                     | `Index`          |
-| `\\`     | Expression continuation | `a <newline> \ + b`        |                  |
+| `\`      | Expression continuation | `a <newline> \ + b`        |                  |
 | `\|=`    | Bitwise OR assign       | `a \| = b`                 | `BitOrAssign`    |
 | `\|\|`   | Logical OR              | `a \|\| b`                 |                  |
 | `\|`     | Bitwise OR              | `a \| b`                   | `BitOr`          |
