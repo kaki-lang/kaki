@@ -70,20 +70,20 @@ order:
 2.  **Optional** arguments are prefixed with `?`. Optional arguments are
     positional, but do not necessarily need to be supplied. They take on a
     default value of `none` if not specified.
-3.  **Variadic** arguments allow an unlimited number of arguments to be
-    supplied. There can be one variadic argument collector per function, which
-    is prefixed with `*`. The collector will collect all of the arguments in a
-    list. If no variadic arguments are given, then it takes the value of the
-    empty list, `[]`
+3.  **Variadic positional** arguments allow an unlimited number of arguments to
+    be supplied. There can be one variadic positional argument collector per
+    function, which is prefixed with `*`. The collector will collect all of the
+    arguments in a list. If no variadic positional arguments are given, then it
+    takes the value of the empty list, `[]`
 4.  **Keyword** arguments are arguments which are always passed by name, but
     are position independent. Keyword arguments are specified and passed in the
     form `name: value`. A keyword aergument is specified in the function
     signature using a trailing `:`, such as `a:`. Keyword arguments are
     required unless specified with a leading `?`, such as `?a:`. When optional
-    keywords are not specified they take on the value of `none`. A catch-all
-    variable for keywords (similar to variadic arguments) can be defined using
-    a prefix `**`. If none are given then the value is the empty hash map,
-    `{}`.
+    keywords are not specified they take on the value of `none`. Variadic
+    keyword arguments (similar to variadic positional arguments) can be defined
+    using a prefix `**`. If none are given then the value is the empty hash
+    map, `{}`.
 5.  **Block** arguments are specified with a prefix `&`, and can be passed as a
     closure. Blocks are required, but can be made optional by prefixing with
     `?&` instead of `&`, in which case the block argument is `none` if not
@@ -109,17 +109,17 @@ f(1)    # a = 1,    b = none
 f(1, 2) # a = 1,    b = 2
 ```
 
-Next are variadic arguments.
+Next are variadic positional arguments.
 
 ```kaki
-# Variadic arguments
+# Variadic positional arguments
 fn f(*xs) {}
 f()        # xs = []
 f(1)       # xs = [1]
 f(1, 2)    # xs = [1, 2]
 f(1, 2, 3) # xs = [1, 2, 3]
 
-# Splat all variadic arguments
+# Splat all variadic positional arguments
 f(*[1, 2, 3]) # xs = [1, 2, 3]
 f(*[1, 2, 3]) # xs = [1, 2, 3]
 ```
@@ -133,7 +133,7 @@ f()                # Error, a is required
 f(a: 10)           # a = 10, b = none
 f(a: 10, b: "two") # a = 10, b = "two"
 
-# Catch-all keyword arguments
+# Variadic keyword arguments
 fn f(a:, ?b:, **kws) {}
 f(a: 10, c: 50)           # a = 10, b = none, kws = {"c": 50}
 f(a: 10, c: 50, d = true) # a = 10, b = none, kws = {"c": 50, "d": true}

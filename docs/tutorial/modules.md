@@ -12,8 +12,7 @@ use module
 use path::to::module
 ```
 
-These import modules, and their contents can be used through the whole
-namespace name.
+Module contents are accessed through their namespace:
 
 ```kaki
 use module
@@ -27,7 +26,7 @@ module namespace.
 use module::{SOME_CONSTANT, SomeType, some_fn}
 # The namespace does not need to be fully qualified
 println(SOME_CONSTANT)
-# But it can be and everything still works
+# ... but it can be and everything still works
 println(module::SOME_CONSTANT)
 ```
 
@@ -38,7 +37,7 @@ be careful or else you might crowd your namespace!
 use module::*
 # The namespace does not need to be fully qualified
 println(SOME_CONSTANT)
-# But it can be and everything still works
+# ... but it can be and everything still works
 println(module::SOME_CONSTANT)
 ```
 
@@ -101,6 +100,11 @@ imported.
 # This works because `scale` was declared publicly
 use my_module::scale
 
-# This will print 100
-println(scale(10))
+scale(5) #=> 50
+
+# This function can be used even though it was
+# defined in mod_c. It was publicly included by
+# my_module, so it can be imported here
+use my_module::some_function
+some_function("Hello")
 ```

@@ -67,32 +67,41 @@ fn format_add(a Int, b Int) String {
 }
 ```
 
-Types can be specified on positional and keyword arguments (but not variadic `*`
-and catch-all keyword `**` arguments). Optional arguments can have a type
-specified, which should be a `Types` that includes `None`, otherwise an error
-will be generated is the argument is not supplied. Below is an example of how
-to specify types of all of these arguments:
+Types can be specified on every argument, however, there are some redundancies:
+
+* Variadic positional arguments (`*`) are always of type `List`.
+* Variadic keyword arguments (`*`) are always of type `HashMap`.
+* Block arguments (`&`) are always of type `Fn`.
+* Optional block (`?&`) are always of type of `Fn | None`.
+
+It is best practice not to specify types for these arguments since they are
+already implicitly handled.
+
+When optional arguments are specified, they must have an option to be `None`,
+such as `Int | None`.
+
+Below is an example of how to specify types for all different arguments:
 
 ```kaki
 fn f(
   a Int,
   ?b Int | None,
-  *c, # Cannot specify type
+  *c List, # Redundant: is always List
   d: Bool | String,
   ?e: Order + Hash | None,
-  **f, # Cannot specify type
-  &g, # Is always expected to be Fn
+  **f HashMap, # Redundant: is always HashMap
+  &g Fn, # Redundant: is always Fn
 ) List {
-  # Function body
+  # ...
 }
 
-fn g(?&h) { # Is always expected to be Fn | None
-  # Function body
+fn g(?&h) { # Redundant: is always Fn | None
+  # ...
 }
 ```
 
-Type checking on variadic, catch-all, and optional block arguments must be
-performed inside the function.
+Type checking on variadic positional, variadic keyword, and optional block
+arguments must be performed inside the function.
 
 When complex types are involved in the function signature, a where clause can
 be used to make the function more readable.
