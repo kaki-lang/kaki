@@ -368,3 +368,109 @@ v3.x #=> 7
 v3.y #=> -5
 v3.z #=> 11
 ```
+
+## Reflected Operators
+
+Binary operators have _reflected_ versions which allow for the order of the
+operands to change. Consider the following implementation of addition on
+`Vec3`:
+
+```kaki
+type Vec3: Add {
+  # ...
+
+  Add.add(other Int | Float | Vec3) {
+    if other.is?(Vec3) {
+      Self.new(@x + other.x, @y + other.y, @z + other.z)
+    } else {
+      Self.new(@x + other, @y + other, @z + other)
+    }
+  }
+}
+```
+
+The definition has changed so that element-wise addition of two vectors can be
+performed, or a number can be added to each component of the vector. This
+allows for the following:
+
+```kaki
+v1 = Vec3.new(1, 2, 3)
+v2 = v1 + 10
+
+v2.x #=> 11
+v2.y #=> 12
+v2.z #=> 13
+```
+
+But not the following:
+
+```kaki
+v1 = Vec3.new(1, 2, 3)
+v2 = 10 + v1 # Oops! Int.add() does not know what to do with a Vec3!
+```
+
+This is because the `Add.add()` method on the left operand is called and the
+argument to the method is the right operand. When the left operand is a `Vec3`,
+the `Vec3.add()` method knows how how add an `Int` to a `Vec3`, but when an
+`Int` is the left operand, the `Int.add()` method does not know how to add a
+`Vec3` to an `Int`.
+
+This problem can be solved by reflecting the operator through implementing the
+`AddRefl` trait.
+
+```kaki
+type Vec3: Add, AddRefl {
+  # ...
+
+  Add.add(other) {
+    if other.is?(Vec3) {
+      Self.new(@x + other.x, @y + other.y, @z + other.z)
+    } else if other.is?(Int | Float) {
+      Self.new(@x + other, @y + other, @z + other)
+    } else {
+      NotImplemented
+    }
+  }
+
+  AddRefl.add_refl(other) {
+    # Use the `Add.add()` implementation since the operator commutes.
+    # For operations that do not commute, such as subtraction, this
+    # implementation will have to be more complex.
+    self + other
+  }
+}
+```
+
+A number of things got changed here:
+
+* The type specifiers got removed from `Add.add()`, allowing it to accept a right operand of any type.
+* `Add.add()` now decides internally whether it can perform the addition, and returns a `NotImplemented` if the righ operand is incompatible.
+* `AddRefl` was implemented, which is the reflected version of addition that allows a `Vec3` to be the right operand.
+
+Now, if the `10 + v1` expression from before is evaluated, the following happens:
+
+1.  The `Int.add()` method is invoked by the `+` operator, and the argument is
+    `v1`, which is equivalent to `10.add(v1)`.
+2.  The `Int.add()` method does not know how to add a `Vec3` with an `Int`, so
+    it returns `NotImplemented`.
+3.  The `+` operator sees that a `NotImplemented` was returned, so it checks to
+    see if `Vec3` implements `AddRefl`.
+4.  `Vec3` does indeed implement `AddRefl`, so the `+` operator tries
+    `v1.add_refl(10)`.
+5.  The `Vec3.add_refl()` returns a value that is not `NotImplemented`, so the
+    `+` operator considers the operation as a success, and returns that value.
+
+This all works because `Vec3` knows how to add an `Int` to itself.
+
+Suppose that instead of adding an `Int`, a string was used, such as
+`"567" + v1`. The execution is roughly the same up until step 5, where
+`Vec3.add_refl()` will return a `NotImplemented`, and an error will be
+generated since both the addition and reflected addition failed.
+
+The `+` operator was given some degree of personality above, as it was described
+as deciding what to do based on the return value of `Int.add()`, the ontology of
+`Vec3`, and the return value of `Vec3.add_refl()`. This is due to fundamental
+aspect of what Kaki operators are: a function which takes values of any two
+types. Unlike many languages where `+` is generally compiled as a single
+instruction, the compilation of the `a + b` translates the expression into
+`std::ops::add(a, b)`, which contains all of this logic.
