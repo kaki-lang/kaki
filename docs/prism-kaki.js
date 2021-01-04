@@ -12,7 +12,10 @@
     ],
     'keyword': /\b(_|abstract|alias|break|cons|continue|else|for|fn|if|in|loop|pub|return|self|Self|trait|type|use|where|while)\b/,
     'boolean': /\b(false|none|true)\b/,
-    'function': /@?@?_*[a-z][a-z0-9_]*(!|\?)?(?=\s*\()/,
+    'function': {
+      pattern: /@?@?_*[a-z][a-z0-9_]*(!|\?)?(?=\s*\()/,
+      alias: 'variable'
+    },
     'field': {
       pattern: /@?@_*[a-z][a-z0-9_]*(!|\?)?/,
       alias: 'property'
@@ -29,7 +32,7 @@
     },
     'type-trait': {
       pattern: /_*[A-Z][A-Za-z_0-9]*(!|\?)?/,
-      alias: 'variable'
+      alias: 'entity'
     },
     'variable': /_*[a-z][a-z0-9_]*(!|\?)?/,
     'anonymous-function-arg': {
@@ -39,7 +42,7 @@
     'operator': /[\~\-\%\+\^\,]|\*\*?|\/\/?|<(<|=)?|>(>|=)?|==?|!=?|&&?|\|\|?|\?=/,
     'punctuation': /(\(|\)|@?\[|\]|@?\{|\}|;|::?|,|\.|\?)/,
     'string': {
-      pattern: /\@?"(\\|(?!")[\s\S])*"/,
+      pattern: /"(\\|(?!")[\s\S])*"/,
       greedy: true,
       inside: {
         interpolation: {
