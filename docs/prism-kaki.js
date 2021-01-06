@@ -10,6 +10,10 @@
         lookbehind: true
       }
     ],
+    'raw-name': {
+      pattern: /`.*`/,
+      alias: 'variable'
+    },
     'keyword': /\b(_|abstract|alias|break|cons|continue|else|for|fn|if|in|loop|pub|return|self|Self|trait|type|use|where|while)\b/,
     'boolean': /\b(false|none|true)\b/,
     'function': {

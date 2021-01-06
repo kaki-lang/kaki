@@ -1,5 +1,10 @@
 # Names
 
+This section describes the rules for names, which are not complex, but are
+different from most languages.
+
+## Naming Rules
+
 Naming conventions help to produce high quality and consistent code. In Kaki,
 these aren't just conventions, but rather rules that must be followed. The
 naming rules are:
@@ -71,3 +76,73 @@ fn print_info(header, _)
   println("The info is '{}'", header)
 }
 ```
+
+## Raw Names
+
+Raw names are a special feature that should only be used when really needed.
+Raw names are enclosed in backticks `` `...` ``, and can contain any Unicode except
+control sequences. Some examples include:
+
+```kaki
+# Characters normally not allowed in names can be
+# used, such as spaces
+fn `add two things`(a, b) { a + b }
+
+# Names can be the same as reserved words
+`if` = true
+
+# Even things like emojis can be used
+type `Spooky 👻` {}
+```
+
+Raw names do not follow the same strict rules as regular names. For example:
+
+```kaki
+type `lowercase name` {}
+```
+
+is fine, even though the name begins with a lowercase letter. Name checking
+rules are ignored when raw names are used.
+
+Raw names are the same as their regular counterparts, provided the name is
+valid as a regular name. For example:
+
+```kaki
+`some_value` = 123
+
+`some_value` #=> 123
+some_value #=> 123
+```
+
+Since `some_value` is a valid name, it can be referenced without the
+surrounding `` ` ``.
+
+Raw names can easily be abused, so there are some guidelines on when they
+should be used:
+
+1.  For backwards compatibility and language interoperability. For example,
+    suppose a library exports a function named `async`, and in a future version
+    of the language `async` is made into a keyword. To use this library
+    function, it can be referenced with `` `async` ``.
+2.  For referencing operators. Consider the `+` operator. It is also provided
+    as a function, which is named `` `+` ``. This allows it to easily be passed
+    around as a higher order function. COnsider the following example:
+
+    ```kaki
+    # The following expressions are equivalent
+    3 + 8 #=> 11
+    `+`(3, 8) # 11
+
+    # `+` can be used as a higher order function.
+    # The following expressions are equivalent.
+    [1, 2, 3].fold(0) { |a, b| a + b } #=> 6
+    [1, 2, 3].fold(0, &`+`) #=> 6
+    ```
+3.  For providing test case names. Good tests can be made even better by having
+    good names.
+
+    ```kaki
+    fn `shortest path in a directed acyclic graph`() {
+      # ...
+    }
+    ```
